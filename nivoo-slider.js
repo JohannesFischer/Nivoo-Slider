@@ -1,12 +1,13 @@
 /*
- * jQuery Nivo Slider v1.6
- * http://nivo.dev7studios.com
+ * Nivoo Slider v0.1
+ * MooTools-Port of the Nivo-Slider: http://nivo.dev7studios.com
  *
- * Copyright 2010, Gilbert Pellegrom
+ * Johannes Fischer
+ * http://www.johannes-fischer.de/
+ *
  * Free to use and abuse under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
  * 
- * March 2010
  */
 
 (function($) {
