@@ -3,13 +3,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>nivoo slider</title>
+    <link rel="stylesheet" type="text/css" href="nivoo-slider.css" />
     <script type="text/javascript" src="../js/mootools.js"></script>
     <script type="text/javascript" src="nivoo-slider.js"></script>
     <script type="text/javascript">
-        
+        window.addEvent('domready', function(){
+            new NivooSlider($('slider'), {
+                autoPlay: true,
+                effect: 'random'//'fade'//'fold'//'sliceDown'//'sliceUpDown'//'sliceUp'//'sliceDownLeft'//'sliceUpDownLeft'
+            });/*.addEvents({
+                'onFinish': function(){
+                    console.log('onFinish');
+                },
+                'onStart': function(){
+                    console.log('onStart');
+                }
+            });*/
+        }); 
     </script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Insert your content here -->
+    <div id="slider">
+        <img src="images/1268244.jpg" alt="" />
+        <img src="images/1269388.jpg" alt="" />
+        <img src="images/1270048.jpg" alt="" title="This is an example of a caption" />
+    </div>
 </body>
 </html>
