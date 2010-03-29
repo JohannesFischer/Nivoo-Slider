@@ -14,7 +14,8 @@ var NivooSlider = new Class({
 
     Implements: [Events,Options],
 
-    children: null,
+    caption: null,
+	children: null,
     containerSize: 0,
     currentSlide: 0,
     currentImage: '',
@@ -43,7 +44,7 @@ var NivooSlider = new Class({
         this.container = $(container);
         this.setOptions(options);
         
-        this.init();
+        this.initSlider();
         this.createSlices();
         if(this.options.autoPlay)
         {
@@ -52,7 +53,7 @@ var NivooSlider = new Class({
     },
     
     /**
-     * GETTER
+     * Getter
      */
     
     getSlices: function()
@@ -60,7 +61,25 @@ var NivooSlider = new Class({
         return this.container.getElements('.nivo-slice');    
     },
     
-    init: function()
+	/**
+	 * Setter
+	 */
+	
+	setBackgroundImage: function()
+	{
+		this.container.setStyle('background-image','url('+this.currentImage.get('src') +')');	
+	},
+	
+	setCaptionText: function(text)
+	{
+		this.caption.set('text', text);
+	},
+	
+	/**
+	 * Create
+	 */
+	
+    initSlider: function()
     {
 		this.container.addClass('nivoSlider');
 
@@ -77,7 +96,30 @@ var NivooSlider = new Class({
 
         //Set first background
 		this.container.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
+
+		this.createCaption();
+
+		if(this.currentImage.get('title'))
+		{			
+			this.showCaption();
+		}
     },
+	
+	createCaption: function()
+	{
+		this.caption = new Element('p', {
+			'class': 'nivo-caption',
+			styles: {
+				opacity: 0
+			}
+		}).inject(this.container);
+		
+		this.caption.store('fxInstance', new Fx.Morph(this.caption, {
+			duration: 200,
+			wait: false
+		}));
+		this.caption.store('height', this.caption.getHeight());
+	},
     
     createSlices: function()
     {
@@ -93,27 +135,44 @@ var NivooSlider = new Class({
             }).inject(this.container);
 
             slice.store('fxInstance', new Fx.Morph(slice, {
-                duration: 500//this.options.animSpeed
+                duration: this.options.animSpeed
             })); 
         }, this);
     },
     
+	/**
+	 * Caption
+	 */
+	
+	hideCaption:function()
+	{
+		var fx = this.caption.retrieve('fxInstance');
+		fx.start({
+			bottom: this.caption.retrieve('height') * -1,
+			opacity: 0	
+		});
+	},
+	
+	showCaption: function()
+	{
+		this.setCaptionText(this.currentImage.get('title'));
+
+		var fx = this.caption.retrieve('fxInstance');
+		fx.start({
+			bottom: 0,
+			opacity: 1	
+		});
+	},
+	
+	/**
+	 * Slide / Animations
+	 */
+	
     slide: function()
     {
         // TODO Set current background before change
-        this.container.setStyle('background-image','url('+this.currentImage.get('src') +')');
-        /*
-        if(!nudge){
-            slider.css('background','url('+ currentImage.attr('src') +') no-repeat');
-        } else {
-            if(nudge == 'prev'){
-                slider.css('background','url('+ currentImage.attr('src') +') no-repeat');
-            }
-            if(nudge == 'next'){
-                slider.css('background','url('+ currentImage.attr('src') +') no-repeat');
-            }
-        }
-        */
+        this.setBackgroundImage();
+        
         this.currentSlide++;
         if(this.currentSlide == this.totalSlides) this.currentSlide = 0;
         if(this.currentSlide < 0) this.currentSlide = (this.totalSlides - 1);
@@ -124,7 +183,14 @@ var NivooSlider = new Class({
         //Set acitve links
         // ...
 
-        //Process caption
+        // Process caption
+		
+		this.hideCaption();
+
+		if(this.currentImage.get('title'))
+		{			
+			this.showCaption();
+		}
         /*if(currentImage.attr('title') != ''){
             if($('.nivo-caption', slider).css('display') == 'block'){
                 $('.nivo-caption p', slider).fadeOut(settings.animSpeed, function(){
@@ -138,10 +204,11 @@ var NivooSlider = new Class({
         } else {
             $('.nivo-caption', slider).fadeOut(settings.animSpeed);
         }*/
-        
-        //Set new slice backgrounds
-        var slices = this.getSlices();
 
+        var slices = this.getSlices();
+		var timeBuff = 0;
+
+		//Set new slice backgrounds
         slices.each(function(slice, i){
             var sliceWidth = (this.container.getWidth()/this.options.slices).round();
             slice.setStyles({
@@ -150,23 +217,21 @@ var NivooSlider = new Class({
                 opacity: 0
             });
         }, this);
-
-        var randomEffect = false;
-
-        if(this.options.effect == 'random')
+    
+		// fire onStart function
+        this.start();
+	
+        // Run effects
+        this.running = true;
+		
+		var randomEffect = false;
+		
+		if(this.options.effect == 'random')
         {
             randomEffect = this.effects.getRandom();
         }
-    
-        // Run effects
-    
-        var effect = randomEffect || this.options.effect;
-        var timeBuff = 0;
 
-        this.running = true;
-        
-        // fire onStart function
-        this.start();
+		var effect = randomEffect || this.options.effect;
 
         if(['sliceDown', 'sliceDownRight', 'sliceDownLeft'].contains(effect))
         {
@@ -176,8 +241,6 @@ var NivooSlider = new Class({
             }
 
             slices.each(function(slice, i){
-                //var fx = slice.retrieve('fxInstance');
-
                 slice.setStyle('top', 0);
     
                 this.animate.delay(100 + timeBuff, this, [slice, 'height']);
@@ -191,6 +254,7 @@ var NivooSlider = new Class({
             {
                 slices = slices.reverse();
             }
+
             slices.each(function(slice, i){
                 var fx = slice.retrieve('fxInstance');
                 
@@ -207,9 +271,8 @@ var NivooSlider = new Class({
             {
                 slices = slices.reverse();
             }
-            slices.each(function(slice, i){
-                var fx = slice.retrieve('fxInstance');
 
+            slices.each(function(slice, i){
                 if(i%2 == 0)
                 {
                     slice.setStyle('top', 0);
@@ -227,7 +290,6 @@ var NivooSlider = new Class({
         else if(effect == 'fold')
         {
             slices.each(function(slice, i){
-
                 var width = slice.getWidth();
 
                 slice.setStyles({
