@@ -2,6 +2,8 @@
  * Nivoo Slider v0.1
  * MooTools-Port of the Nivo-Slider: http://nivo.dev7studios.com
  *
+ * requirements: MooTools 1.2+
+ *
  * Johannes Fischer
  * http://www.johannes-fischer.de/
  *
@@ -19,7 +21,9 @@ var NivooSlider = new Class({
     containerSize: 0,
     currentSlide: 0,
     currentImage: '',
-    effects: ['sliceDownRight','sliceDownLeft','sliceUpRight','sliceUpLeft','sliceUpDown','sliceUpDownLeft','fold','fade'],
+    effects: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDown','sliceUpDownLeft','sliceUpLeft','sliceUpRight'],
+	hover: false,
+	interval: null,
     paused: false,
     running: false,
     totalSlides: 0,
@@ -28,13 +32,15 @@ var NivooSlider = new Class({
         animSpeed: 500,
         autoPlay: false,
         effect:'sliceDown',
-        slices: 15,        
-        pauseTime: 3000,
+		interval: 3000,
+		pauseOnHover: true,
+		slices: 15,
         
+		// not implemented
         directionNav: true,
         directionNavHide: true,
-        controlNav: true,
-        pauseOnHover: true
+        controlNav: true
+
         //onStart: $empty(),
         //onFinish: $empty()
     },
@@ -48,7 +54,7 @@ var NivooSlider = new Class({
         this.createSlices();
         if(this.options.autoPlay)
         {
-            this.slide.periodical(this.options.pauseTime, this);
+            this.play();
         }
     },
     
@@ -85,7 +91,7 @@ var NivooSlider = new Class({
 
         this.containerSize = this.container.getSize();
         
-        //Find our slider children
+        // Find our slider children
         this.children = this.container.getChildren();
 
         this.totalSlides = this.children.length;
@@ -94,15 +100,23 @@ var NivooSlider = new Class({
 
         this.currentImage = this.children[0];
 
-        //Set first background
+        // Set first background
 		this.container.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
 
 		this.createCaption();
 
-		if(this.currentImage.get('title'))
-		{			
-			this.showCaption();
+		this.showCaption();
+		
+		// attach pauseOnHover
+		
+		if(this.options.pauseOnHover)
+		{
+			this.container.addEvents({
+				'mouseenter': this.pause.bindWithEvent(this),
+				'mouseleave': this.play.bindWithEvent(this)
+			});
 		}
+		
     },
 	
 	createCaption: function()
@@ -147,6 +161,7 @@ var NivooSlider = new Class({
 	hideCaption:function()
 	{
 		var fx = this.caption.retrieve('fxInstance');
+
 		fx.start({
 			bottom: this.caption.retrieve('height') * -1,
 			opacity: 0	
@@ -155,7 +170,13 @@ var NivooSlider = new Class({
 	
 	showCaption: function()
 	{
-		this.setCaptionText(this.currentImage.get('title'));
+		var title = this.currentImage.get('title');
+		
+		if(!title){
+			return;
+		}
+		
+		this.setCaptionText(title);
 
 		var fx = this.caption.retrieve('fxInstance');
 		fx.start({
@@ -163,20 +184,35 @@ var NivooSlider = new Class({
 			opacity: 1	
 		});
 	},
+
+	toggleCaption: function()
+	{
+		// TODO combine show & hide
+	},
 	
 	/**
 	 * Slide / Animations
 	 */
+
+	play: function()
+	{
+		this.interval = this.slide.periodical(this.options.interval, this);
+	},
+
+	pause: function()
+	{
+		$clear(this.interval);
+	},
 	
     slide: function()
     {
-        // TODO Set current background before change
+        // Set current background before change
         this.setBackgroundImage();
-        
+
         this.currentSlide++;
         if(this.currentSlide == this.totalSlides) this.currentSlide = 0;
         if(this.currentSlide < 0) this.currentSlide = (this.totalSlides - 1);
-        
+
         // Set currentImage
         this.currentImage = this.children[this.currentSlide];
 
@@ -187,23 +223,7 @@ var NivooSlider = new Class({
 		
 		this.hideCaption();
 
-		if(this.currentImage.get('title'))
-		{			
-			this.showCaption();
-		}
-        /*if(currentImage.attr('title') != ''){
-            if($('.nivoo-caption', slider).css('display') == 'block'){
-                $('.nivoo-caption p', slider).fadeOut(settings.animSpeed, function(){
-                    $(this).html(currentImage.attr('title'));
-                    $(this).fadeIn(settings.animSpeed);
-                });
-            } else {
-                $('.nivoo-caption p', slider).html(currentImage.attr('title'));
-            }					
-            $('.nivoo-caption', slider).fadeIn(settings.animSpeed);
-        } else {
-            $('.nivoo-caption', slider).fadeOut(settings.animSpeed);
-        }*/
+		this.showCaption();
 
         var slices = this.getSlices();
 		var timeBuff = 0;
@@ -223,15 +243,13 @@ var NivooSlider = new Class({
 	
         // Run effects
         this.running = true;
-		
-		var randomEffect = false;
-		
-		if(this.options.effect == 'random')
-        {
-            randomEffect = this.effects.getRandom();
-        }
 
-		var effect = randomEffect || this.options.effect;
+		var effect = this.options.effect;
+
+		if(effect == 'random')
+        {
+            effect = this.effects.getRandom();
+        }
 
         if(['sliceDown', 'sliceDownRight', 'sliceDownLeft'].contains(effect))
         {
@@ -245,7 +263,7 @@ var NivooSlider = new Class({
     
                 this.animate.delay(100 + timeBuff, this, [slice, 'height']);
 
-                timeBuff += 50;
+                timeBuff+= 50;
             }, this);
         }
         else if(['sliceUp', 'sliceUpRight', 'sliceUpLeft'].contains(effect))
@@ -262,7 +280,7 @@ var NivooSlider = new Class({
 
                 this.animate.delay(100 + timeBuff, this, [slice, 'height']);
 
-                timeBuff += 50;
+                timeBuff+= 50;
             }, this);
         }
         else if(['sliceUpDown', 'sliceUpDownRight', 'sliceUpDownLeft'].contains(effect))
@@ -284,7 +302,7 @@ var NivooSlider = new Class({
 
                 this.animate.delay(100 + timeBuff, this, [slice, 'height']);
 
-                timeBuff += 50;
+                timeBuff+= 50;
             }, this);
         }
         else if(effect == 'fold')
@@ -300,7 +318,7 @@ var NivooSlider = new Class({
 
                 this.animate.delay(100 + timeBuff, this, [slice, 'width', width]);
 
-                timeBuff += 50;
+                timeBuff+= 50;
             }, this);
         }
         else if(effect == 'fade')
@@ -320,6 +338,7 @@ var NivooSlider = new Class({
     animate: function(slice, property, to)
     {
         var fx = slice.retrieve('fxInstance');
+
         var styles = {
             opacity: 1    
         };
@@ -351,18 +370,6 @@ var NivooSlider = new Class({
 
 });
 /*		
-			//Create caption
-			slider.append(
-				$('<div class="nivoo-caption"><p></p></div>').css('display','none')
-			);
-			//Process initial  caption
-			if(currentImage.attr('title') != ''){
-				$('.nivoo-caption p', slider).html(currentImage.attr('title'));					
-				$('.nivoo-caption', slider).fadeIn(settings.animSpeed);
-			}
-			
-			//In the words of Super Mario "let's a go!"
-			var timer = setInterval(function(){ nivoRun(slider, kids, settings, false); }, settings.pauseTime);
 			
 			//Add Direction nav
 			if(settings.directionNav){
@@ -414,22 +421,7 @@ var NivooSlider = new Class({
 					nivooRun(slider, kids, settings, 'control');
 				});
 			}
-			
-			//For pauseOnHover setting
-			if(settings.pauseOnHover){
-				slider.hover(function(){
-					paused = true;
-					clearInterval(timer);
-					timer = '';
-				}, function(){
-					paused = false;
-					//Restart the timer
-					if(timer == ''){
-						timer = setInterval(function(){ nivooRun(slider, kids, settings, false); }, settings.pauseTime);
-					}
-				});
-			}
-			
+						
 			//Event when Animation finishes
 			slider.bind('nivoo:animFinished', function(){ 
 				running = false; 
