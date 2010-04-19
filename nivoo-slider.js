@@ -30,7 +30,7 @@ var NivooSlider = new Class({
 
     options: {
         animSpeed: 500,
-        autoPlay: false,
+        autoPlay: true,
         effect:'sliceDown',
 		interval: 3000,
 		pauseOnHover: true,
