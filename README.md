@@ -11,7 +11,7 @@ Just include nivoo-lider.js and the nivoo-slider.css to your HTML:
 
 	#HTML
 	<script type="text/javascript" src="/js/nivoo-slider.js"></script>
-	<link  href="/css/nivo-slider.css" rel="stylesheet" type="text/css" media="screen" />
+	<link  href="/css/nivoo-slider.css" rel="stylesheet" type="text/css" media="screen" />
 	
 And the gallery structure:
 	
@@ -49,7 +49,7 @@ And then initialize the slider:
 Documentation
 -------------
 
-## Class: MooDropMenu ##
+## Class: NivooSlider ##
 
 ### Syntax ###
 
