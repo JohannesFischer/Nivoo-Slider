@@ -1,15 +1,22 @@
 /*
- * Nivoo Slider v0.1
- * MooTools-Port of the Nivo-Slider: http://nivo.dev7studios.com
- *
- * requirements: MooTools 1.2+
- *
- * Johannes Fischer
- * http://www.johannes-fischer.de/
- *
- * Free to use and abuse under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- * 
+---
+
+script: NivooSlider.js
+
+description: A nice image slider for MooTools.
+
+license: MIT-style license
+
+authors:
+- Johannes Fischer
+
+requires:
+- core/1.2.4: '*'
+
+provides:
+- NivooSlider
+
+...
  */
 
 var NivooSlider = new Class({
