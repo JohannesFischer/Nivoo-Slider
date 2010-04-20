@@ -1,17 +1,17 @@
 Nivoo-Slider
 ============
 
-...
+The NivooSlider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 9 transition effects and there's more to come.
 
 
 How to use
 ----------
 
-Just include nivoo-lider.js and the nivoo-slider.css to your HTML:
+Just include NivooSider.js and the NivooSlider.css to your HTML:
 
 	#HTML
-	<script type="text/javascript" src="/js/nivoo-slider.js"></script>
-	<link  href="/css/nivoo-slider.css" rel="stylesheet" type="text/css" media="screen" />
+	<script type="text/javascript" src="NivooSlider.js"></script>
+	<link  href="NivooSlider.css" rel="stylesheet" type="text/css" media="screen" />
 	
 And the gallery structure:
 	
@@ -22,7 +22,7 @@ And the gallery structure:
         <img src="images/image3.jpg" alt="" />
     </div>	
 	
-And then initialize the slider:
+And then initialize the slider using the domready event:
 
 	#JS
 	window.addEvent('domready',function(){
@@ -32,15 +32,14 @@ And then initialize the slider:
 		
 		// The more advanced way
 		new NivooSlider($('slider'), {
-            autoPlay: true,
             effect: 'sliceUpDown',
             pauseOnHover: true
         }).addEvents({
             'onFinish': function(){
-                // fired after the transition
+                // fired after each transition
             },
             'onStart': function(){
-                // fired right before the transition
+                // fired right before each transition
             }
         });
 
@@ -71,6 +70,11 @@ Documentation
 - start - (function) Is fired right before theeach animation
 - finish - (function) Is fired right after each animation
 
+Coming Features
+---------------
+- linked images
+- horizontal transition effects
+- directional navigation elements
 
 License
 -------
