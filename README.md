@@ -3,6 +3,7 @@ Nivoo-Slider
 
 The NivooSlider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 9 transition effects and there's more to come.
 
+![Screenshot 1](http://www.johannes-fischer.de/assets/Labs/nivoo-slider.png)
 
 How to use
 ----------
@@ -67,7 +68,7 @@ Documentation
 - slices - (number: defaults to 15) Number of the vertical slices used for the transition
 
 #### Events ####
-- start - (function) Is fired right before theeach animation
+- start - (function) Is fired right before each animation
 - finish - (function) Is fired right after each animation
 
 Coming Features
