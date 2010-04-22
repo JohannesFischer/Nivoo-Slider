@@ -9,12 +9,14 @@
 	position:relative;
     width: 600px;
 }
+
 .nivooSlider img {
 	left: 0;
 	position: absolute;
 	top: 0;
 }
-.nivooSlider a.nivoo-imageLink {
+
+.nivoo-link {
 	border: none;
 	display: none;
 	height: 100%;
@@ -44,24 +46,4 @@
 	position:absolute;
 	z-index:89;
 	width: 100%;
-}
-
-.nivoo-directionNav a {
-	position: absolute;
-	top: 45%;
-	z-index: 99;
-}
-.nivoo-prevNav {
-	left: 0;
-}
-.nivoo-nextNav {
-	right: 0;
-}
-
-.nivoo-controlNav a {
-	position: relative;
-	z-index: 99;
-}
-.nivoo-controlNav a.active {
-	font-weight: bold;
 }

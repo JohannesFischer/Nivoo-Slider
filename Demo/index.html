@@ -8,9 +8,12 @@
     <script type="text/javascript" src="../Source/NivooSlider.js"></script>
     <script type="text/javascript">
         window.addEvent('domready', function(){
-            new NivooSlider($('slider'), {
-                effect: 'random' //'fade'//'fold'//'sliceDown'//'sliceUpDown'//'sliceUp'//'sliceDownLeft'//'sliceUpDownLeft'
-            });
+            new NivooSlider($('slider'));
+
+			$$('a').addEvent('click', function(e){
+				e.stop();
+				alert('hyperlink');
+			});
         }); 
     </script>
     <style type="text/css">
@@ -28,7 +31,9 @@
 <body>
     <div id="slider">
         <img src="images/1268244.jpg" alt="" title="This is an example of a caption" />
-        <img src="images/1269388.jpg" alt="" />
+		<a href="#">
+			<img src="images/1269388.jpg" alt="" />
+		</a>
         <img src="images/1270048.jpg" alt="" title="This is another example of a caption" />
     </div>
 </body>

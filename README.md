@@ -19,7 +19,9 @@ And the gallery structure:
 	#HTML
 	 <div id="slider">
         <img src="images/image1.jpg" alt="" title="insert text to display a caption" />
-        <img src="images/iamge2.jpg" alt="" />
+        <a href="#hyperlink">
+            <img src="images/iamge2.jpg" alt="" title="This image is linked to a great website" />
+        </a>
         <img src="images/image3.jpg" alt="" />
     </div>	
 	
@@ -33,8 +35,10 @@ And then initialize the slider using the domready event:
 		
 		// The more advanced way
 		new NivooSlider($('slider'), {
+            animSpeed: 750,
             effect: 'sliceUpDown',
-            pauseOnHover: true
+			interval: 5000,
+			slices: 20
         }).addEvents({
             'onFinish': function(){
                 // fired after each transition
@@ -68,12 +72,11 @@ Documentation
 - slices - (number: defaults to 15) Number of the vertical slices used for the transition
 
 #### Events ####
-- start - (function) Is fired right before each animation
-- finish - (function) Is fired right after each animation
+- start - (function) Is fired right before each transition
+- finish - (function) Is fired right after each transition
 
 Coming Features
 ---------------
-- linked images
 - horizontal transition effects
 - directional navigation elements
 
