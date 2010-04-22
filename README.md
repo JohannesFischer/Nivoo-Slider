@@ -1,7 +1,7 @@
 Nivoo-Slider
 ============
 
-The NivooSlider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 9 transition effects and there's more to come.
+The Nivoo-Slider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 9 transition effects and there's more to come.
 
 ![Screenshot 1](http://www.johannes-fischer.de/assets/Labs/nivoo-slider.png)
 
