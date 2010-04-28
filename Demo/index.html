@@ -8,7 +8,10 @@
     <script type="text/javascript" src="../Source/NivooSlider.js"></script>
     <script type="text/javascript">
         window.addEvent('domready', function(){
-            new NivooSlider($('slider'));
+            new NivooSlider($('slider'), {
+				effect: 'random',
+				orientation: 'horizontal'	
+			});
 
 			$$('a').addEvent('click', function(e){
 				e.stop();

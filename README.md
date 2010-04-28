@@ -66,8 +66,9 @@ Documentation
 #### Options ####
 - animSpeed - (number: defaults to 500) The time (duration) in ms of the transition
 - autoPlay - (bool: defaults to true) Start the transition automatically after initializing
-- effect - (string: defaults to sliceDown) Type of transition (fade, fold, sliceDownLeft, sliceDownRight, sliceUpDown, sliceUpDownLeft, sliceUpLeft, sliceUpRight),
+- effect - (string: defaults to sliceDown) Type of transition (see effects),
 - interval - (number: defaults to 3000) Interval in ms between the transitions, needed for autoPlay
+- orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal or vertical
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
 - slices - (number: defaults to 15) Number of the vertical slices used for the transition
 
@@ -75,9 +76,30 @@ Documentation
 - start - (function) Is fired right before each transition
 - finish - (function) Is fired right after each transition
 
+Effects
+-------
+
+#### horizontal ####
+- fade
+- fold
+- sliceLeftUp
+- sliceLeftDown
+- sliceRightDown
+- sliceRightUp
+
+#### vertical ####
+- fade
+- fold
+- sliceDownLeft
+- sliceDownRight
+- sliceUpDownLeft
+- sliceUpDownRight
+- sliceUpLeft
+- sliceUpRight
+
 Coming Features
 ---------------
-- horizontal transition effects
+- more horizontal transition effects
 - directional navigation elements
 
 License

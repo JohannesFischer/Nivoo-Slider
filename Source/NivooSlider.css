@@ -1,5 +1,3 @@
-/*  SLIDER*/
-
 .nivooSlider {
     background-repeat: no-repeat;
     box-shadow: 0 0 10px #000;
@@ -44,7 +42,7 @@
 	left: 0;
     margin: 0;
 	text-indent: 5px;
-	position:absolute;
-	z-index:89;
+	position: absolute;
+	z-index: 89;
 	width: 100%;
 }
