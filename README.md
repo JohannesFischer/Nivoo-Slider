@@ -1,7 +1,7 @@
 Nivoo-Slider
 ============
 
-The Nivoo-Slider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 9 transition effects and there's more to come.
+The Nivoo-Slider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 14 different transition effects.
 
 ![Screenshot 1](http://www.johannes-fischer.de/assets/Labs/nivoo-slider.png)
 
@@ -36,8 +36,9 @@ And then initialize the slider using the domready event:
 		// The more advanced way
 		new NivooSlider($('slider'), {
             animSpeed: 750,
-            effect: 'sliceUpDown',
+            effect: 'sliceLeftRightDown',
 			interval: 5000,
+            orientation: 'horizontal',
 			slices: 20
         }).addEvents({
             'onFinish': function(){
@@ -70,7 +71,7 @@ Documentation
 - interval - (number: defaults to 3000) Interval in ms between the transitions, needed for autoPlay
 - orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal or vertical
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
-- slices - (number: defaults to 15) Number of the vertical slices used for the transition
+- slices - (number: defaults to 15) Number of the slices used for the transition
 
 #### Events ####
 - start - (function) Is fired right before each transition
@@ -82,8 +83,10 @@ Effects
 #### horizontal ####
 - fade
 - fold
-- sliceLeftUp
 - sliceLeftDown
+- sliceLeftUp
+- sliceLeftRightDown
+- sliceLeftRightUp
 - sliceRightDown
 - sliceRightUp
 
@@ -99,8 +102,8 @@ Effects
 
 Coming Features
 ---------------
-- more horizontal transition effects
 - directional navigation elements
+- preloading images
 
 License
 -------

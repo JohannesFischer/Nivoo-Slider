@@ -30,7 +30,7 @@ var NivooSlider = new Class({
     currentSlide: 0,
     currentImage: '',
     effects: {
-		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceRightDown', 'sliceRightUp'],
+		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp'],
 		vertical: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight']
 	},
 	hover: false,
@@ -249,6 +249,11 @@ var NivooSlider = new Class({
 	
     slide: function()
     {
+		if(this.running)
+		{
+			return;
+		}
+
         // Set current background before change
         this.setBackgroundImage();
 
@@ -289,14 +294,9 @@ var NivooSlider = new Class({
                 opacity: 0
             });
 			
-			if(orientation == 'horizontal')
-			{
-				slice.setStyle('width', 0);
-			}
-			else
-			{
-				slice.setStyle('height', 0);
-			}
+			var property = orientation == 'horizontal' ? 'width' : 'height';
+
+			slice.setStyle(property, 0);
 			
         }, this);
     
@@ -323,8 +323,8 @@ var NivooSlider = new Class({
 
             slices.each(function(slice, i){
                 slice.setStyle('top', 0);
-    
-                this.animate.delay(100 + timeBuff, this, [slice, 'height']);
+
+                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
 
                 timeBuff+= 50;
             }, this);
@@ -341,7 +341,7 @@ var NivooSlider = new Class({
                 
                 slice.setStyle('bottom', 0);
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'height']);
+                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
 
                 timeBuff+= 50;
             }, this);
@@ -363,12 +363,12 @@ var NivooSlider = new Class({
                     slice.setStyle('bottom', 0);
                 }
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'height']);
+                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
 
                 timeBuff+= 50;
             }, this);
         }
-		
+
 		// horizontal effects		
 		else if(['sliceLeftUp', 'sliceLeftDown' , 'sliceRightDown', 'sliceRightUp'].contains(effect))
 		{
@@ -392,9 +392,29 @@ var NivooSlider = new Class({
                 timeBuff+= 50;
             }, this);
 		}
-		
-		// TODO include LeftRight effects
-		
+		else if(['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect))
+        {
+            if(effect == 'sliceLeftRightUp')
+            {
+                slices = slices.reverse();
+            }
+
+            slices.each(function(slice, i){
+                if(i%2 == 0)
+                {
+                    slice.setStyle('left', 0);
+                }
+                else
+                {
+                    slice.setStyle('right', 0);
+                }
+
+                this.animate.delay(100 + timeBuff, this, [slice, 'width', this.containerSize.x]);
+
+                timeBuff+= 50;
+            }, this);
+        }
+
 		// horizontal or vertical		
         else if(effect == 'fold')
         {
@@ -450,17 +470,7 @@ var NivooSlider = new Class({
         var styles = {
             opacity: 1    
         };
-
-		// TODO use styles[property] = to
-        if(property == 'height')
-        {
-			// TODO alsways use to param
-            styles.height= !$defined(to) ? this.containerSize.y : to;
-        }
-        else if(property == 'width')
-        {
-            styles.width= to;
-        }
+		styles[property] = to;
 
         fx.start(styles).chain(function(){
 			if(this.count == this.options.slices)
