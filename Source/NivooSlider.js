@@ -26,6 +26,7 @@ var NivooSlider = new Class({
     caption: null,
 	children: null,
     containerSize: 0,
+	count: 0,
     currentSlide: 0,
     currentImage: '',
     effects: {
@@ -438,15 +439,12 @@ var NivooSlider = new Class({
                 this.animate.delay(100, this, [slice]);
             }, this);
         }
-
-        this.running = false;
-
-        // fire onFinish function
-        this.finish();
     },
     
     animate: function(slice, property, to)
     {
+		this.count++;
+
         var fx = slice.retrieve('fxInstance');
 
         var styles = {
@@ -454,7 +452,6 @@ var NivooSlider = new Class({
         };
 
 		// TODO use styles[property] = to
-
         if(property == 'height')
         {
 			// TODO alsways use to param
@@ -465,7 +462,17 @@ var NivooSlider = new Class({
             styles.width= to;
         }
 
-        fx.start(styles);
+        fx.start(styles).chain(function(){
+			if(this.count == this.options.slices)
+			{
+				this.running = false;
+		
+				// fire onFinish function
+				this.finish();
+	
+				this.count = 0;
+			}
+		}.bind(this));		
     },
     
     /**
