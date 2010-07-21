@@ -67,8 +67,10 @@ Documentation
 #### Options ####
 - animSpeed - (number: defaults to 500) The time (duration) in ms of the transition
 - autoPlay - (bool: defaults to true) Start the transition automatically after initializing
+- directionNav -(bool: deafults to true) Shows controls to go back and forth
+- directionNavHide - (bool: defaults to false) Hides the navigation controls on mouseout, so they are only visible when the mouse cursor is over the slider element
 - effect - (string: defaults to sliceDown) Type of transition (see effects),
-- interval - (number: defaults to 3000) Interval in ms between the transitions, needed for autoPlay
+- interval - (number: defaults to 3000) Interval in ms between the transitions, required for the autoPlay function
 - orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal or vertical
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
 - slices - (number: defaults to 15) Number of the slices used for the transition
@@ -102,7 +104,6 @@ Effects
 
 Coming Features
 ---------------
-- directional navigation elements
 - preloading images
 
 License

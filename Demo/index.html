@@ -9,13 +9,15 @@
     <script type="text/javascript">
         window.addEvent('domready', function(){
             new NivooSlider($('slider'), {
+				animSpeed: 750,
+				autoPlay: true,
+				directionNav: true,
+				directionNavHide: true,
 				effect: 'random',
-				orientation: 'horizontal'	
-			});
-
-			$$('a').addEvent('click', function(e){
-				e.stop();
-				alert('hyperlink');
+				interval: 5000,
+				orientation: 'vertical',
+				pauseOnHover: true,
+				slices: 30
 			});
         }); 
     </script>

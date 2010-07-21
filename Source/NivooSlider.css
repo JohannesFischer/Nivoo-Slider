@@ -22,8 +22,35 @@
 	position: absolute;
 	top: 0;
 	width: 100%;
-	z-index:60;	
+	z-index: 60;	
 }
+
+.direction-nav-left {
+    left: 0;
+}
+.direction-nav-right {
+    right: 0;
+}
+.direction-nav-left,
+.direction-nav-right {
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    }
+    .direction-nav-left a,
+    .direction-nav-right a {
+        display: block;
+    }
+    .direction-nav-left a:focus,
+    .direction-nav-right a:focus {
+        outline: none;
+    }
+    .direction-nav-left a {
+        background: url(images/arrow-left.png) no-repeat 2% 50%;
+    }
+    .direction-nav-right a {
+        background: url(images/arrow-right.png) no-repeat 98% 50%;
+    }
 
 .nivoo-slice {
 	display: block;

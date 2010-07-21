@@ -42,16 +42,16 @@ var NivooSlider = new Class({
     options: {
         animSpeed: 500,
         autoPlay: true,
-        effect:'sliceDown',
+		directionNav: true,
+		directionNavHide: false,
+        effect: 'sliceDown',
 		interval: 3000,
 		orientation: 'vertical',
 		pauseOnHover: true,
 		slices: 15,
         
 		// not implemented yet
-        directionNav: true,
-        directionNavHide: true,
-        controlNav: true
+		preLoadImages: false
 
         //onStart: $empty(),
         //onFinish: $empty()
@@ -135,6 +135,12 @@ var NivooSlider = new Class({
 				'mouseleave': this.play.bindWithEvent(this)
 			});
 		}
+		
+		// create directional navigation
+		if(this.options.directionNav)
+		{
+			this.createDirectionNav();
+		}
     },
 	
 	createCaption: function()
@@ -145,12 +151,75 @@ var NivooSlider = new Class({
 				opacity: 0
 			}
 		}).inject(this.container);
-		
+
 		this.caption.store('fxInstance', new Fx.Morph(this.caption, {
 			duration: 200,
 			wait: false
 		}));
 		this.caption.store('height', this.caption.getHeight());
+	},
+	
+	createDirectionNav: function()
+	{
+		var containerSize = this.container.getSize();
+
+		var directionNavStyles = {
+			height: containerSize.y,
+			width: (containerSize.x/5).round()
+		};
+
+		// create container
+		
+		var leftContainer = new Element('div', {
+			'class': 'direction-nav-left',
+			styles: directionNavStyles
+		}).inject(this.container);
+		
+		var rightContainer = new Element('div', {
+			'class': 'direction-nav-right',
+			styles: directionNavStyles
+		}).inject(this.container);
+		
+		// create controls
+
+		this.leftNav = new Element('a', {
+			events: {
+				'click': function(e){
+					e.stop();
+					this.previous();
+				}.bind(this)	
+			},
+			href: '#',
+			styles: {
+				height: directionNavStyles.height
+			}
+		}).inject(leftContainer);
+		
+		this.rightNav = new Element('a', {
+			events: {
+				'click': function(e){
+					e.stop();
+					this.next();
+				}.bind(this)	
+			},
+			href: '#',
+			styles: {
+				height: directionNavStyles.height
+			}
+		}).inject(rightContainer);
+		
+		if(this.options.directionNavHide)
+		{
+			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
+			this.container.addEvents({
+				'mouseout': function(){
+					$$(this.leftNav, this.rightNav).fade(0);
+				}.bind(this),
+				'mouseover': function(){
+					$$(this.leftNav, this.rightNav).fade(1);	
+				}.bind(this)
+			});
+		}
 	},
     
 	createLinkHolder: function()
@@ -237,17 +306,43 @@ var NivooSlider = new Class({
 	 * Slide / Animations
 	 */
 
-	play: function()
+	next: function()
 	{
-		this.interval = this.slide.periodical(this.options.interval, this);
+		if(this.options.autoPlay)
+		{
+			this.pause();
+			if(!this.options.pauseOnHover)
+			{
+				this.play();
+			}
+		}
+		this.slide('+');
 	},
 
 	pause: function()
 	{
 		$clear(this.interval);
 	},
+
+	play: function()
+	{
+		this.interval = this.slide.periodical(this.options.interval, this);
+	},
 	
-    slide: function()
+	previous: function()
+	{
+		if(this.options.autoPlay)
+		{
+			this.pause();
+			if(!this.options.pauseOnHover)
+			{
+				this.play();
+			}
+		}
+		this.slide('-');
+	},
+	
+    slide: function(direction)
     {
 		if(this.running)
 		{
@@ -257,7 +352,21 @@ var NivooSlider = new Class({
         // Set current background before change
         this.setBackgroundImage();
 
-        this.currentSlide++;
+		if($defined(direction))
+		{
+			if(direction == '+')
+			{
+				this.currentSlide++;
+			}
+			else
+			{
+				this.currentSlide--;
+			}
+		}
+		else
+		{
+			this.currentSlide++;
+		}
         if(this.currentSlide == this.totalSlides) this.currentSlide = 0;
         if(this.currentSlide < 0) this.currentSlide = (this.totalSlides - 1);
 
@@ -476,7 +585,7 @@ var NivooSlider = new Class({
 			if(this.count == this.options.slices)
 			{
 				this.running = false;
-		
+
 				// fire onFinish function
 				this.finish();
 	
