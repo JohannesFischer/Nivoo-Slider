@@ -11,7 +11,7 @@ authors:
 - Johannes Fischer
 
 requires:
-- core/1.2.4: '*'
+- core/1.3: '*'
 
 provides:
 - NivooSlider
@@ -42,6 +42,7 @@ var NivooSlider = new Class({
     options: {
         animSpeed: 500,
         autoPlay: true,
+		cssClass: 'nivooSlider',
 		directionNav: true,
 		directionNavHide: false,
         effect: 'sliceDown',
@@ -104,8 +105,6 @@ var NivooSlider = new Class({
 	
     initSlider: function()
     {
-		this.container.addClass('nivooSlider');
-
         this.containerSize = this.container.getSize();
         
         // Find our slider children
@@ -131,8 +130,12 @@ var NivooSlider = new Class({
 		if(this.options.pauseOnHover && this.options.autoPlay)
 		{
 			this.container.addEvents({
-				'mouseenter': this.pause.bindWithEvent(this),
-				'mouseleave': this.play.bindWithEvent(this)
+				'mouseenter': function(){
+					this.pause();
+				}.bind(this),
+				'mouseleave': function(){
+					this.play();
+				}.bind(this)
 			});
 		}
 		
@@ -141,12 +144,13 @@ var NivooSlider = new Class({
 		{
 			this.createDirectionNav();
 		}
+		
+		this.container.addClass(this.options.cssClass);
     },
 	
 	createCaption: function()
 	{
 		this.caption = new Element('p', {
-			'class': 'nivoo-caption',
 			styles: {
 				opacity: 0
 			}
@@ -336,7 +340,7 @@ var NivooSlider = new Class({
 
 	pause: function()
 	{
-		$clear(this.interval);
+		window.clearInterval(this.interval);
 	},
 
 	play: function()
@@ -372,7 +376,7 @@ var NivooSlider = new Class({
 			return;
 		}
 
-		if($defined(slideNo))
+		if(slideNo != undefined)
 		{
 			this.currentSlide = slideNo;
 		}
@@ -402,7 +406,7 @@ var NivooSlider = new Class({
 		//Set new slice backgrounds
 		var orientation = this.options.orientation;
 		
-        slices.each(function(slice, i){
+        slices.each(function(slice){
 
 			var position =  slice.retrieve('position');
 
@@ -437,7 +441,7 @@ var NivooSlider = new Class({
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice, i){
+            slices.each(function(slice){
                 slice.setStyle('top', 0);
 
                 this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
@@ -452,7 +456,7 @@ var NivooSlider = new Class({
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice, i){
+            slices.each(function(slice){
                 var fx = slice.retrieve('fxInstance');
                 
                 slice.setStyle('bottom', 0);
@@ -502,7 +506,7 @@ var NivooSlider = new Class({
 				slices.setStyle('left', 0);
 			}
 
-            slices.each(function(slice, i){    
+            slices.each(function(slice){    
                 this.animate.delay(100 + timeBuff, this, [slice, 'width', this.containerSize.x]);
 
                 timeBuff+= 50;
@@ -534,7 +538,7 @@ var NivooSlider = new Class({
 		// horizontal or vertical		
         else if(effect == 'fold')
         {
-            slices.each(function(slice, i){
+            slices.each(function(slice){
 				if(orientation == 'horizontal')
 				{
 					var property = 'height';
@@ -563,7 +567,7 @@ var NivooSlider = new Class({
         }
         else  // if(effect == 'fade')
         {
-            slices.each(function(slice, i){
+            slices.each(function(slice){
 				if(orientation == 'horizontal')
 				{
 					slice.setStyle('width', this.containerSize.x);
@@ -585,7 +589,7 @@ var NivooSlider = new Class({
             opacity: 1    
         };
 
-		if($defined(property) && $defined(to))
+		if(property != undefined && to != undefined)
 		{
 			styles[property] = to;
 		}

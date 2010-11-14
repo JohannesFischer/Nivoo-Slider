@@ -1,11 +1,12 @@
+#slider {
+    height: 350px;
+    overflow: hidden;
+    width: 600px;
+}
+
 .nivooSlider {
     background-repeat: no-repeat;
-    box-shadow: 0 0 10px #000;
-    height: 350px;
-    margin: 5px;
-    overflow: hidden;
 	position:relative;
-    width: 600px;
 }
 
 .nivooSlider img {
@@ -59,7 +60,9 @@
 	z-index: 50;
 }
 
-.nivoo-caption {
+/* caption */
+
+.nivooSlider p {
     background: #181818;
 	background: rgba(0, 0, 0, 0.8);
 	bottom: -24px;
@@ -70,6 +73,6 @@
     margin: 0;
 	text-indent: 5px;
 	position: absolute;
-	z-index: 89;
 	width: 100%;
+    z-index: 89;
 }

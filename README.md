@@ -59,14 +59,16 @@ Documentation
 ### Syntax ###
 
 	#JS
-	var slider = new NivooSlider($('myGallery'));
+	var slider = new NivooSlider(element[, options]);
 	
 #### Arguments ####
-1. element - (element,string) An Element or the string id of an Element to apply the gallery to.
+1. element - (mixed) An Element or the string id of an Element to apply the gallery to.
+2. options - (object, optional) The Nivoo-Slider options object, described below:
 
 #### Options ####
 - animSpeed - (number: defaults to 500) The time (duration) in ms of the transition
 - autoPlay - (bool: defaults to true) Start the transition automatically after initializing
+- cssClass - (string, defaults to novooSlider) Name of the css class that is added after initializing the slider
 - directionNav -(bool: deafults to true) Shows controls to go back and forth
 - directionNavHide - (bool: defaults to false) Hides the navigation controls on mouseout, so they are only visible when the mouse cursor is over the slider element
 - effect - (string: defaults to sliceDown) Type of transition (see effects),
@@ -82,9 +84,12 @@ Documentation
 Effects
 -------
 
-#### horizontal ####
+#### horizontal & vertical ####
 - fade
 - fold
+- random
+
+#### horizontal ####
 - sliceLeftDown
 - sliceLeftUp
 - sliceLeftRightDown
@@ -93,8 +98,6 @@ Effects
 - sliceRightUp
 
 #### vertical ####
-- fade
-- fold
 - sliceDownLeft
 - sliceDownRight
 - sliceUpDownLeft
