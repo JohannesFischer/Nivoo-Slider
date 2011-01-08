@@ -160,9 +160,8 @@ var NivooSlider = new Class({
 			duration: 200,
 			wait: false
 		}));
-		this.caption.store('height', this.caption.getHeight());
 	},
-	
+
 	createDirectionNav: function()
 	{
 		var containerSize = this.container.getSize();
@@ -227,7 +226,7 @@ var NivooSlider = new Class({
 				height: directionNavStyles.height
 			}
 		}).inject(rightContainer);
-		
+
 		if(this.options.directionNavHide)
 		{
 			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
@@ -297,26 +296,24 @@ var NivooSlider = new Class({
 	
 	hideCaption:function()
 	{
-		var fx = this.caption.retrieve('fxInstance');
-
-		fx.start({
-			bottom: this.caption.retrieve('height') * -1,
-			opacity: 0	
+		this.caption.retrieve('fxInstance').start({
+			bottom: this.caption.getHeight() * -1,
+			opacity: 0.5
 		});
 	},
 	
 	showCaption: function()
 	{
 		var title = this.currentImage.get('title');
-		
+
 		if(!title){
+			this.hideCaption();
 			return;
 		}
 		
 		this.setCaptionText(title);
 
-		var fx = this.caption.retrieve('fxInstance');
-		fx.start({
+		this.caption.retrieve('fxInstance').start({
 			bottom: 0,
 			opacity: 1	
 		});
@@ -396,8 +393,7 @@ var NivooSlider = new Class({
 			this.linkHolder.setStyle('display', 'none');
 		}
 
-        // Process caption		
-		this.hideCaption();
+        // Process caption
 		this.showCaption();
 
         var slices = this.getSlices();
