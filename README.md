@@ -17,12 +17,15 @@ Just include NivooSider.js and the NivooSlider.css to your HTML:
 And the gallery structure:
 	
 	#HTML
-	 <div id="slider">
-        <img src="images/image1.jpg" alt="" title="insert text to display a caption" />
-        <a href="#hyperlink">
-            <img src="images/iamge2.jpg" alt="" title="This image is linked to a great website" />
-        </a>
-        <img src="images/image3.jpg" alt="" />
+	 <div id="Slider" class="nivoo-slider">
+        <div class="nivoo-slider-holder">
+            <img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
+			<a href="#">
+				<img src="images/1269388.jpg" alt="" title="You can also link images" height="350" width="600" />
+			</a>
+			<img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
+			<img src="images/1270256.jpg" alt="" title="This is another example of a caption" height="350" width="600" />
+        </div>
     </div>	
 	
 And then initialize the slider using the domready event:
@@ -31,10 +34,10 @@ And then initialize the slider using the domready event:
 	window.addEvent('domready',function(){
 
 		// The simple way
-		new NivooSlider($('slider'));
+		new NivooSlider($('Slider'));
 		
 		// The more advanced way
-		new NivooSlider($('slider'), {
+		new NivooSlider($('Slider'), {
             animSpeed: 750,
             effect: 'sliceLeftRightDown',
 			interval: 5000,
