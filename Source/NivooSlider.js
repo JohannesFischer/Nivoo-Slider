@@ -30,8 +30,9 @@ var NivooSlider = new Class({
     currentSlide: 0,
     currentImage: '',
     effects: {
-		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp'],
-		vertical: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight']
+		// used for random effects
+		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp','wipeDown','wipeUp'],
+		vertical: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight','wipeLeft', 'wipeRight']
 	},
 	hover: false,
 	interval: null,
@@ -42,27 +43,29 @@ var NivooSlider = new Class({
     options: {
         animSpeed: 500,
         autoPlay: true,
-		cssClass: 'nivooSlider',
 		directionNav: true,
 		directionNavHide: false,
-        effect: 'sliceDown',
+        effect: 'sliceDown', // TODO allow array with multiple effects
 		interval: 3000,
 		orientation: 'vertical',
 		pauseOnHover: true,
 		slices: 15,
-        
+
 		// not implemented yet
 		preLoadImages: false
+		//onLastSlide: function(){}
 
-        //onStart: $empty(),
-        //onFinish: $empty()
+        //onStart: function(){},
+        //onFinish: function(){}
     },
-    
+
     initialize: function(container, options)
     {
         this.container = $(container);
+		this.holder = this.container.getElement('div');
+
         this.setOptions(options);
-        
+
         this.initSlider();
         this.createSlices();
         if(this.options.autoPlay)
@@ -77,12 +80,12 @@ var NivooSlider = new Class({
     
 	getImages: function()
 	{
-		return this.container.getElements('img');	
+		return this.holder.getElements('img');	
 	},
 	
     getSlices: function()
     {
-        return this.container.getElements('.nivoo-slice');    
+        return this.holder.getElements('.nivoo-slice');    
     },
     
 	/**
@@ -91,7 +94,7 @@ var NivooSlider = new Class({
 	
 	setBackgroundImage: function()
 	{
-		this.container.setStyle('background-image','url('+this.currentImage.get('src') +')');
+		this.holder.setStyle('background-image','url('+this.currentImage.get('src') +')');
 	},
 	
 	setCaptionText: function(text)
@@ -105,7 +108,7 @@ var NivooSlider = new Class({
 	
     initSlider: function()
     {
-        this.containerSize = this.container.getSize();
+        this.containerSize = this.holder.getSize();
         
         // Find our slider children
         this.children = this.getImages();
@@ -120,7 +123,7 @@ var NivooSlider = new Class({
 		this.createLinkHolder();
 
         // Set first background
-		this.container.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
+		this.holder.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
 
 		this.createCaption();
 
@@ -129,7 +132,7 @@ var NivooSlider = new Class({
 		// attach pauseOnHover		
 		if(this.options.pauseOnHover && this.options.autoPlay)
 		{
-			this.container.addEvents({
+			this.holder.addEvents({
 				'mouseenter': function(){
 					this.pause();
 				}.bind(this),
@@ -144,8 +147,6 @@ var NivooSlider = new Class({
 		{
 			this.createDirectionNav();
 		}
-		
-		this.container.addClass(this.options.cssClass);
     },
 	
 	createCaption: function()
@@ -154,7 +155,7 @@ var NivooSlider = new Class({
 			styles: {
 				opacity: 0
 			}
-		}).inject(this.container);
+		}).inject(this.holder);
 
 		this.caption.store('fxInstance', new Fx.Morph(this.caption, {
 			duration: 200,
@@ -164,11 +165,9 @@ var NivooSlider = new Class({
 
 	createDirectionNav: function()
 	{
-		var containerSize = this.container.getSize();
-
 		var directionNavStyles = {
-			height: containerSize.y,
-			width: (containerSize.x/5).round()
+			height: this.containerSize.y,
+			width: (this.containerSize.x/5).round()
 		};
 
 		// create container
@@ -176,12 +175,12 @@ var NivooSlider = new Class({
 		var leftContainer = new Element('div', {
 			'class': 'direction-nav-left',
 			styles: directionNavStyles
-		}).inject(this.container);
+		}).inject(this.holder);
 		
 		var rightContainer = new Element('div', {
 			'class': 'direction-nav-right',
 			styles: directionNavStyles
-		}).inject(this.container);
+		}).inject(this.holder);
 		
 		// create controls
 
@@ -230,7 +229,7 @@ var NivooSlider = new Class({
 		if(this.options.directionNavHide)
 		{
 			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
-			this.container.addEvents({
+			this.holder.addEvents({
 				'mouseout': function(){
 					$$(this.leftNav, this.rightNav).fade(0);
 				}.bind(this),
@@ -246,21 +245,27 @@ var NivooSlider = new Class({
 		this.linkHolder = new Element('a', {
 			'class': 'nivoo-link',
 			href: '#'
-		}).inject(this.container);
+		}).inject(this.holder);
 	},
 	
     createSlices: function()
     {
+		// effects that need one slice only
+		if(['fade','wipeLeft','wipeRight'].contains(this.options.effect))
+		{
+			this.options.slices = 1;
+		}
+
 		var sliceSize = {
-			x: (this.container.getWidth()/this.options.slices).round(),
-			y: (this.container.getHeight()/this.options.slices).round()
+			x: (this.containerSize.x/this.options.slices).round(),
+			y: (this.containerSize.y/this.options.slices).round()
 		};
 
         this.options.slices.each(function(i){
 
             var slice = new Element('div', {
                 'class': 'nivoo-slice'
-            }).inject(this.container);
+            }).inject(this.holder);
 
 			var position = {
 				left: this.options.orientation == 'vertical' ? sliceSize.x*i : 0,
@@ -270,23 +275,29 @@ var NivooSlider = new Class({
 			// set size & position
 			if(this.options.orientation == 'horizontal')
 			{
+				var height = i == this.options.slices-1 ? this.containerSize.y-(sliceSize.y*i) : sliceSize.y;
+				var width = '100%';
+
 				slice.setStyles({
-					height: i == this.options.slices-1 ? this.container.getHeight()-(sliceSize.y*i) : sliceSize.y,
+					height: height,
                     top: position.top,
-                    width: '100%'
+                    width: width
                 });
 			}
 			// if vertical
 			else
 			{
+				var height = 0;
+				var width = i == this.options.slices-1 ? this.containerSize.x-(sliceSize.x*i) : sliceSize.x;
+
 				slice.setStyles({
 					left: position.left,
-                    width: i == this.options.slices-1 ? this.container.getWidth()-(sliceSize.x*i) : sliceSize.x
+                    width: width
                 });
 			}
             slice.store('fxInstance', new Fx.Morph(slice, {
                 duration: this.options.animSpeed
-            })).store('position', position);
+            })).store('coordinates', Object.merge(position, {height: height, width: width}));
         }, this);
     },
     
@@ -401,16 +412,23 @@ var NivooSlider = new Class({
 
 		//Set new slice backgrounds
 		var orientation = this.options.orientation;
-		
+
+		// reset slices
         slices.each(function(slice){
 
-			var position =  slice.retrieve('position');
+			var coordinates =  slice.retrieve('coordinates');
 
             slice.setStyles({
-                background: 'url('+this.currentImage.get('src')+') no-repeat -'+ position.left +'px '+ position.top*-1 +'px',
-                opacity: 0
+                background: 'url('+this.currentImage.get('src')+') no-repeat -'+ coordinates.left +'px '+ coordinates.top*-1 +'px',
+				bottom: '',
+				height: coordinates.height,
+				left: coordinates.left,
+                opacity: 0,
+				right: '',
+				top: coordinates.top,
+				width: coordinates.width
             });
-			
+
 			var property = orientation == 'horizontal' ? 'width' : 'height';
 
 			slice.setStyle(property, 0);
@@ -440,7 +458,7 @@ var NivooSlider = new Class({
             slices.each(function(slice){
                 slice.setStyle('top', 0);
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
+                this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
                 timeBuff+= 50;
             }, this);
@@ -457,7 +475,7 @@ var NivooSlider = new Class({
                 
                 slice.setStyle('bottom', 0);
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
+                this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
                 timeBuff+= 50;
             }, this);
@@ -479,10 +497,32 @@ var NivooSlider = new Class({
                     slice.setStyle('bottom', 0);
                 }
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'height', this.containerSize.y]);
+                this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
                 timeBuff+= 50;
             }, this);
+        }
+		else if(['wipeLeft', 'wipeRight'].contains(effect))
+        {
+			var styles = {
+				height: this.containerSize.y,
+				opacity: 1,
+				width: 0
+			};
+
+			if(effect == 'wipeRight')
+			{
+				Object.append(styles, {
+					backgroundPosition: 'top right',
+					left: '',
+					right: 0
+				});
+			}
+			
+			var slice = slices[0];
+
+			slice.setStyles(styles);
+			this.animate(slice, {width: this.containerSize.x}, true);
         }
 
 		// horizontal effects		
@@ -495,15 +535,21 @@ var NivooSlider = new Class({
 			
 			if(effect == 'sliceRightDown' || effect == 'sliceRightUp')
 			{
-				slices.setStyle('right', 0);
+				slices.setStyles({
+					left: '',
+					right: 0
+				});
 			}
 			else
 			{
-				slices.setStyle('left', 0);
+				slices.setStyles({
+					left: 0,
+					right: ''
+				});
 			}
 
             slices.each(function(slice){    
-                this.animate.delay(100 + timeBuff, this, [slice, 'width', this.containerSize.x]);
+                this.animate.delay(100 + timeBuff, this, [slice, {opacity: 1, width: this.containerSize.x}]);
 
                 timeBuff+= 50;
             }, this);
@@ -518,27 +564,57 @@ var NivooSlider = new Class({
             slices.each(function(slice, i){
                 if(i%2 == 0)
                 {
-                    slice.setStyle('left', 0);
+                    slice.setStyles({
+						left: 0,
+						right: ''
+					});
                 }
                 else
                 {
-                    slice.setStyle('right', 0);
+                    slice.setStyles({
+						left: '',
+						right: 0
+					});
                 }
 
-                this.animate.delay(100 + timeBuff, this, [slice, 'width', this.containerSize.x]);
+                this.animate.delay(100 + timeBuff, this, [slice, {opacity: 1, width: this.containerSize.x}]);
 
                 timeBuff+= 50;
             }, this);
+        }
+		else if(['wipeDown', 'wipeUp'].contains(effect))
+        {
+			var styles = {
+				height: 0,
+				opacity: 1,
+				width: this.containerSize.x
+			};
+
+			if(effect == 'wipeUp')
+			{
+				Object.append(styles, {
+					backgroundPosition: 'bottom left',
+					bottom: 0,
+					top: ''
+				});
+			}
+			
+			var slice = slices[0];
+
+			slice.setStyles(styles);
+			this.animate(slice, {height: this.containerSize.y}, true);
         }
 
 		// horizontal or vertical		
         else if(effect == 'fold')
         {
             slices.each(function(slice){
+				var fxStyles = {
+					opacity: 1	
+				};
 				if(orientation == 'horizontal')
 				{
-					var property = 'height';
-					var to = slice.getHeight();
+					fxStyles.height = slice.getHeight();
 	
 					slice.setStyles({
 						height: 0,
@@ -547,8 +623,7 @@ var NivooSlider = new Class({
 				}
 				else
 				{
-					var property = 'width';
-					var to = slice.getWidth();
+					fxStyles.width = slice.getWidth();
 	
 					slice.setStyles({
 						height: this.containerSize.y,
@@ -557,42 +632,32 @@ var NivooSlider = new Class({
 					});
 				}
 
-				this.animate.delay(100 + timeBuff, this, [slice, property, to]);				
+				this.animate.delay(100 + timeBuff, this, [slice, fxStyles]);				
                 timeBuff+= 50;
             }, this);
         }
         else  // if(effect == 'fade')
         {
-            slices.each(function(slice){
-				if(orientation == 'horizontal')
-				{
-					slice.setStyle('width', this.containerSize.x);
-				}
-				else
-				{
-					slice.setStyle('height', this.containerSize.y);
-				}
-                this.animate.delay(100, this, [slice]);
-            }, this);
+			var slice = slices[0];
+
+			slice.setStyles({
+				height: this.containerSize.y,
+				width: this.containerSize.x	
+			});
+
+            this.animate(slice, {opacity: 1}, true);
         }
     },
     
-    animate: function(slice, property, to)
+    animate: function(slice, fxStyles, last)
     {
         var fx = slice.retrieve('fxInstance');
+		
+		var isLast = last != undefined && last == true;
 
-        var styles = {
-            opacity: 1    
-        };
-
-		if(property != undefined && to != undefined)
-		{
-			styles[property] = to;
-		}
-
-        fx.start(styles).chain(function(){
+        fx.start(fxStyles).chain(function(){
 			this.count++;
-			if(this.count == this.options.slices)
+			if(this.count == this.options.slices || isLast)
 			{
 				this.running = false;
 

@@ -1,15 +1,16 @@
-#slider {
+.nivoo-slider {
+}
+
+.nivoo-slider-holder {
+	background-repeat: no-repeat;
     height: 350px;
     overflow: hidden;
+	position: relative;
     width: 600px;
 }
 
-.nivooSlider {
-    background-repeat: no-repeat;
-	position:relative;
-}
-
-.nivooSlider img {
+.nivoo-slider img,
+.nivoo-link {
 	left: 0;
 	position: absolute;
 	top: 0;
@@ -19,11 +20,8 @@
 	border: none;
 	display: none;
 	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
 	width: 100%;
-	z-index: 60;	
+	z-index: 20;	
 }
 
 .direction-nav-left {
@@ -36,7 +34,7 @@
 .direction-nav-right {
     position: absolute;
     top: 0;
-    z-index: 100;
+    z-index: 40;
     }
     .direction-nav-left a,
     .direction-nav-right a {
@@ -57,22 +55,22 @@
 	display: block;
 	height: 100%;
 	position: absolute;
-	z-index: 50;
+	z-index: 10;
 }
 
 /* caption */
 
-.nivooSlider p {
+.nivoo-slider p {
     background: #181818;
-	background: rgba(0, 0, 0, 0.8);
-	bottom: -24px;
+	background: rgba(0, 0, 0, .6);
+	bottom: -30px;
 	color: #fff;
-	height: 24px;
-	line-height: 24px;
+	height: 30px;
+	line-height: 30px;
 	left: 0;
     margin: 0;
 	text-indent: 5px;
 	position: absolute;
 	width: 100%;
-    z-index: 89;
+    z-index: 30;
 }
