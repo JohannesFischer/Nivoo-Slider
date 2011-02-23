@@ -172,13 +172,11 @@ var NivooSlider = new Class({
 
 		// create container
 		
-		var leftContainer = new Element('div', {
-			'class': 'direction-nav-left',
+		var leftContainer = new Element('div.direction-nav-left', {
 			styles: directionNavStyles
 		}).inject(this.holder);
 		
-		var rightContainer = new Element('div', {
-			'class': 'direction-nav-right',
+		var rightContainer = new Element('div.direction-nav-right', {
 			styles: directionNavStyles
 		}).inject(this.holder);
 		
@@ -242,8 +240,7 @@ var NivooSlider = new Class({
     
 	createLinkHolder: function()
 	{
-		this.linkHolder = new Element('a', {
-			'class': 'nivoo-link',
+		this.linkHolder = new Element('a.nivoo-link', {
 			href: '#'
 		}).inject(this.holder);
 	},
@@ -263,9 +260,7 @@ var NivooSlider = new Class({
 
         this.options.slices.each(function(i){
 
-            var slice = new Element('div', {
-                'class': 'nivoo-slice'
-            }).inject(this.holder);
+            var slice = new Element('div.nivoo-slice').inject(this.holder);
 
 			var position = {
 				left: this.options.orientation == 'vertical' ? sliceSize.x*i : 0,
