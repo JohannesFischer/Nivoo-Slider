@@ -34,6 +34,7 @@ var NivooSlider = new Class({
 		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp','wipeDown','wipeUp'],
 		vertical: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight','wipeLeft', 'wipeRight']
 	},
+	holder: null,
 	hover: false,
 	interval: null,
     paused: false,
@@ -61,17 +62,16 @@ var NivooSlider = new Class({
 
     initialize: function(container, options)
     {
-        this.container = $(container);
-		this.holder = this.container.getElement('div');
+		this.container = $(container);
 
-        this.setOptions(options);
+		this.setOptions(options);
 
-        this.initSlider();
-        this.createSlices();
-        if(this.options.autoPlay)
-        {
-            this.play();
-        }
+		this.initSlider();
+		this.createSlices();
+		if(this.options.autoPlay)
+		{
+			this.play();
+		}
     },
     
     /**
@@ -108,8 +108,11 @@ var NivooSlider = new Class({
 	
     initSlider: function()
     {
+		// wrap child elements
+		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
+
         this.containerSize = this.holder.getSize();
-        
+
         // Find our slider children
         this.children = this.getImages();
 
@@ -118,7 +121,7 @@ var NivooSlider = new Class({
         this.children.setStyle('display','none');
 
         this.currentImage = this.children[0];
-		
+
 		// init LinkHolder
 		this.createLinkHolder();
 
@@ -171,7 +174,6 @@ var NivooSlider = new Class({
 		};
 
 		// create container
-		
 		var leftContainer = new Element('div.direction-nav-left', {
 			styles: directionNavStyles
 		}).inject(this.holder);
@@ -181,7 +183,6 @@ var NivooSlider = new Class({
 		}).inject(this.holder);
 		
 		// create controls
-
 		this.leftNav = new Element('a', {
 			events: {
 				'click': function(e){
@@ -392,7 +393,10 @@ var NivooSlider = new Class({
 
         if(imageParent.get('tag') == 'a')
 		{
-			this.linkHolder.setStyle('display', 'block').set('href', imageParent.get('href'));
+			var clone = imageParent.clone(false).cloneEvents(imageParent);
+			clone.replaces(this.linkHolder);
+			this.linkHolder = clone;
+			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
 		}
 		else
 		{
@@ -489,7 +493,10 @@ var NivooSlider = new Class({
                 }
                 else
                 {
-                    slice.setStyle('bottom', 0);
+                    slice.setStyles({
+						bottom:  0,
+						top: ''
+					});
                 }
 
                 this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);

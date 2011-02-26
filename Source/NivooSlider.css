@@ -1,12 +1,13 @@
-.nivoo-slider {
+.nivoo-slider,
+.nivoo-slider-holder {
+    height: 350px;
+    overflow: hidden;
+    position: relative;
+    width: 600px;
 }
 
 .nivoo-slider-holder {
 	background-repeat: no-repeat;
-    height: 350px;
-    overflow: hidden;
-	position: relative;
-    width: 600px;
 }
 
 .nivoo-slider img,
@@ -14,6 +15,11 @@
 	left: 0;
 	position: absolute;
 	top: 0;
+    z-index: 0;
+}
+.nivoo-slider > img:first-child,
+.nivoo-slider > a:first-child img {
+    z-index: 1;
 }
 
 .nivoo-link {

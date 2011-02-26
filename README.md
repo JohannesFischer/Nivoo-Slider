@@ -18,14 +18,12 @@ And the gallery structure:
 	
 	#HTML
 	 <div id="Slider" class="nivoo-slider">
-        <div class="nivoo-slider-holder">
-            <img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
-			<a href="#">
-				<img src="images/1269388.jpg" alt="" title="You can also link images" height="350" width="600" />
-			</a>
-			<img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
-			<img src="images/1270256.jpg" alt="" title="This is another example of a caption" height="350" width="600" />
-        </div>
+        <img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
+        <a href="#">
+            <img src="images/1269388.jpg" alt="" title="You can also link images (events will be delegated)" height="350" width="600" />
+        </a>
+        <img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
+        <img src="images/1270256.jpg" alt="" title="This is another example of a caption" height="350" width="600" />
     </div>	
 	
 And then initialize the slider using the domready event:

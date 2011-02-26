@@ -2,22 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>nivoo slider</title>
+    <title>Nivoo Slider Demo</title>
     <link rel="stylesheet" type="text/css" href="../Source/NivooSlider.css" />
-    <script type="text/javascript" src="mootools-core-1.3-full-nocompat-yc.js"></script>
+    <script type="text/javascript" src="mootools-core-1.3.1-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="../Source/NivooSlider.js"></script>
     <script type="text/javascript">
         window.addEvent('domready', function(){
             new NivooSlider($('Slider'), {
-				animSpeed: 500,
-				autoPlay: true,
-				directionNav: true,
 				directionNavHide: true,
 				effect: 'random',
-				interval: 5000,
-				orientation: 'vertical',
-				pauseOnHover: true,
-				slices: 11
+				interval: 5000
 			});
         }); 
     </script>
@@ -27,26 +21,49 @@
             padding: 0;
         }
         body {
-            background: #fff;
-            color: #000;
+            background: #eee;
+            color: #555;
             font: 12px/14px Georgia, serif; 
         }
-		#slider {
-		    box-shadow: 0 0 10px #000;
-			margin: 5px;
+		h1 {
+			font-size: 24px;
+			line-height: 24px;
+			margin-bottom: 20px;
+		}
+		a img {
+			border: none;
+		}
+		#Wrapper {
+			margin: 10px auto 0;
+			width: 800px;
+		}
+		#Slider {
+		    box-shadow: 0 0 10px rgba(100, 100, 100, .8);
+			-moz-box-shadow: 0 0 10px rgba(100, 100, 100, .8);
+			margin: 0 0 20px;
 		}
     </style>
 </head>
 <body>
-    <div id="Slider" class="nivoo-slider">
-		<div class="nivoo-slider-holder">
+	
+	<div id="Wrapper">
+	
+	<h1>Nivoo Slider Demo</h1>
+	
+		<div id="Slider" class="nivoo-slider">
 			<img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
 			<a href="#">
-				<img src="images/1269388.jpg" alt="" title="You can also link images" height="350" width="600" />
+				<img src="images/1269388.jpg" alt="" title="You can also link images (events will be delegated)" height="350" width="600" />
 			</a>
-			<img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
+			<a href="http://www.google.de/">
+				<img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
+			</a>
 			<img src="images/1270256.jpg" alt="" title="This is another example of a caption" height="350" width="600" />
 		</div>
-    </div>
+
+		<p>For the documentation go to the <a href="https://github.com/JohannesFischer/Nivoo-Slider">Nivoo Slider github page</a>.</p>
+
+	</div>
+
 </body>
 </html>
