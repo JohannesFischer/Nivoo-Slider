@@ -8,6 +8,10 @@
     <script type="text/javascript" src="../Source/NivooSlider.js"></script>
     <script type="text/javascript">
         window.addEvent('domready', function(){
+			$$('a')[1].addEvent('click', function(e){
+				e.stop();
+				alert('[you triggered a click event]');
+			});
             new NivooSlider($('Slider'), {
 				directionNavHide: true,
 				effect: 'random',
@@ -51,14 +55,14 @@
 	<h1>Nivoo Slider Demo</h1>
 	
 		<div id="Slider" class="nivoo-slider">
+			<a href="#">
+				<img src="images/1269388.jpg" alt="" title="This is an example of a linked image (events will be delegated)" height="350" width="600" />
+			</a>
 			<img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
 			<a href="#">
-				<img src="images/1269388.jpg" alt="" title="You can also link images (events will be delegated)" height="350" width="600" />
+				<img src="images/1270048.jpg" alt="" title="Click on the image to trigger the click event" height="350" width="600" />
 			</a>
-			<a href="http://www.google.de/">
-				<img src="images/1270048.jpg" alt="" title="" height="350" width="600" />
-			</a>
-			<img src="images/1270256.jpg" alt="" title="This is another example of a caption" height="350" width="600" />
+			<img src="images/1270256.jpg" alt="" height="350" width="600" />
 		</div>
 
 		<p>For the documentation go to the <a href="https://github.com/JohannesFischer/Nivoo-Slider">Nivoo Slider github page</a>.</p>

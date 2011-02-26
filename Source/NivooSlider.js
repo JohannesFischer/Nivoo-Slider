@@ -46,6 +46,7 @@ var NivooSlider = new Class({
         autoPlay: true,
 		directionNav: true,
 		directionNavHide: false,
+		directionNavWidth: '20%',
         effect: 'sliceDown', // TODO allow array with multiple effects
 		interval: 3000,
 		orientation: 'vertical',
@@ -102,6 +103,24 @@ var NivooSlider = new Class({
 		this.caption.set('text', text);
 	},
 	
+	setLink: function()
+	{
+		//Set active link
+		var imageParent = this.currentImage.getParent();
+
+        if(imageParent.get('tag') == 'a')
+		{
+			var clone = imageParent.clone(false).cloneEvents(imageParent);
+			clone.replaces(this.linkHolder);
+			this.linkHolder = clone;
+			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
+		}
+		else
+		{
+			this.linkHolder.setStyle('display', 'none');
+		}
+	},
+	
 	/**
 	 * Create
 	 */
@@ -122,8 +141,9 @@ var NivooSlider = new Class({
 
         this.currentImage = this.children[0];
 
-		// init LinkHolder
+		// init LinkHolderand set link
 		this.createLinkHolder();
+		this.setLink();
 
         // Set first background
 		this.holder.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
@@ -168,9 +188,11 @@ var NivooSlider = new Class({
 
 	createDirectionNav: function()
 	{
+		var width = this.options.directionNavWidth;
+
 		var directionNavStyles = {
 			height: this.containerSize.y,
-			width: (this.containerSize.x/5).round()
+			width: width
 		};
 
 		// create container
@@ -388,20 +410,7 @@ var NivooSlider = new Class({
         // Set currentImage
         this.currentImage = this.children[this.currentSlide];
 
-        //Set active link
-		var imageParent = this.currentImage.getParent();
-
-        if(imageParent.get('tag') == 'a')
-		{
-			var clone = imageParent.clone(false).cloneEvents(imageParent);
-			clone.replaces(this.linkHolder);
-			this.linkHolder = clone;
-			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
-		}
-		else
-		{
-			this.linkHolder.setStyle('display', 'none');
-		}
+        this.setLink();
 
         // Process caption
 		this.showCaption();
