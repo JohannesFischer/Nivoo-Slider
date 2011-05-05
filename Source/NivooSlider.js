@@ -31,8 +31,9 @@ var NivooSlider = new Class({
     currentImage: '',
     effects: {
 		// used for random effects
-		horizontal: ['fade', 'fold', 'sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp','wipeDown','wipeUp'],
-		vertical: ['fade','fold','sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight','wipeLeft', 'wipeRight']
+		common: ['fade', 'fold'],
+		horizontal: ['sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp','wipeDown','wipeUp'],
+		vertical: ['sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight','wipeLeft', 'wipeRight']
 	},
 	holder: null,
 	hover: false,
@@ -55,10 +56,10 @@ var NivooSlider = new Class({
 
 		// not implemented yet
 		preLoadImages: false
-		//onLastSlide: function(){}
 
-        //onStart: function(){},
-        //onFinish: function(){}
+		//onFinish: function(){}
+		//onLastSlide: function(){}
+        //onStart: function(){}        
     },
 
     initialize: function(container, options)
@@ -67,6 +68,9 @@ var NivooSlider = new Class({
 
 		this.setOptions(options);
 
+		this.effects.horizontal.combine(this.effects.common);
+		this.effects.vertical.combine(this.effects.common);
+
 		this.initSlider();
 		this.createSlices();
 		if(this.options.autoPlay)
@@ -74,105 +78,35 @@ var NivooSlider = new Class({
 			this.play();
 		}
     },
-    
-    /**
-     * Getter
-     */
-    
-	getImages: function()
-	{
-		return this.holder.getElements('img');	
-	},
-	
-    getSlices: function()
+
+	animate: function(slice, fxStyles, last)
     {
-        return this.holder.getElements('.nivoo-slice');    
-    },
-    
-	/**
-	 * Setter
-	 */
-	
-	setBackgroundImage: function()
-	{
-		this.holder.setStyle('background-image','url('+this.currentImage.get('src') +')');
-	},
-	
-	setCaptionText: function(text)
-	{
-		this.caption.set('text', text);
-	},
-	
-	setLink: function()
-	{
-		//Set active link
-		var imageParent = this.currentImage.getParent();
-
-        if(imageParent.get('tag') == 'a')
-		{
-			var clone = imageParent.clone(false).cloneEvents(imageParent);
-			clone.replaces(this.linkHolder);
-			this.linkHolder = clone;
-			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
-		}
-		else
-		{
-			this.linkHolder.setStyle('display', 'none');
-		}
-	},
-	
-	/**
-	 * Create
-	 */
-	
-    initSlider: function()
-    {
-		// wrap child elements
-		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
-
-        this.containerSize = this.holder.getSize();
-
-        // Find our slider children
-        this.children = this.getImages();
-
-        this.totalSlides = this.children.length;
-
-        this.children.setStyle('display','none');
-
-        this.currentImage = this.children[0];
-
-		// init LinkHolderand set link
-		this.createLinkHolder();
-		this.setLink();
-
-        // Set first background
-		this.holder.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
-
-		this.createCaption();
-
-		this.showCaption();
+        var fx = slice.retrieve('fxInstance');
 		
-		// attach pauseOnHover		
-		if(this.options.pauseOnHover && this.options.autoPlay)
-		{
-			this.holder.addEvents({
-				'mouseenter': function(){
-					this.pause();
-				}.bind(this),
-				'mouseleave': function(){
-					this.play();
-				}.bind(this)
-			});
-		}
-		
-		// create directional navigation
-		if(this.options.directionNav)
-		{
-			this.createDirectionNav();
-		}
-    },
+		var isLast = last != undefined && last == true;
+
+        fx.start(fxStyles).chain(function(){
+			this.count++;
+			if(this.count == this.options.slices || isLast)
+			{
+				this.running = false;
+
+				// fire onFinish function
+				this.finish();
+
+				this.setBackgroundImage();
 	
-	createCaption: function()
+				this.count = 0;
+				
+				if(this.currentSlide == (this.totalSlides-1))
+				{
+					this.lastSlide();
+				}
+			}
+		}.bind(this));		
+    },
+
+createCaption: function()
 	{
 		this.caption = new Element('p', {
 			styles: {
@@ -319,38 +253,70 @@ var NivooSlider = new Class({
         }, this);
     },
     
-	/**
-	 * Caption
-	 */
+	getImages: function()
+	{
+		return this.holder.getElements('img');	
+	},
+	
+    getSlices: function()
+    {
+        return this.holder.getElements('.nivoo-slice');    
+    },
+	
+    initSlider: function()
+    {
+		// wrap child elements
+		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
+
+        this.containerSize = this.holder.getSize();
+
+        // Find our slider children
+        this.children = this.getImages();
+
+        this.totalSlides = this.children.length;
+
+        this.children.setStyle('display','none');
+
+        this.currentImage = this.children[0];
+
+		// init LinkHolderand set link
+		this.createLinkHolder();
+		this.setLink();
+
+        // Set first background
+		this.holder.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
+
+		this.createCaption();
+
+		this.showCaption();
+		
+		// attach pauseOnHover		
+		if(this.options.pauseOnHover && this.options.autoPlay)
+		{
+			this.holder.addEvents({
+				'mouseenter': function(){
+					this.pause();
+				}.bind(this),
+				'mouseleave': function(){
+					this.play();
+				}.bind(this)
+			});
+		}
+
+		// create directional navigation
+		if(this.options.directionNav)
+		{
+			this.createDirectionNav();
+		}
+    },
 	
 	hideCaption:function()
 	{
 		this.caption.retrieve('fxInstance').start({
 			bottom: this.caption.getHeight() * -1,
-			opacity: 0.5
+			opacity: .5
 		});
 	},
-	
-	showCaption: function()
-	{
-		var title = this.currentImage.get('title');
-
-		if(!title){
-			this.hideCaption();
-			return;
-		}
-		
-		this.setCaptionText(title);
-
-		this.caption.retrieve('fxInstance').start({
-			bottom: 0,
-			opacity: 1	
-		});
-	},
-	
-	/**
-	 * Slide / Animations
-	 */
 
 	next: function()
 	{
@@ -393,6 +359,24 @@ var NivooSlider = new Class({
 		}
 
 		this.slide();
+	},
+	
+	showCaption: function()
+	{
+		var title = this.currentImage.get('title');
+
+		if(!title)
+		{
+			this.hideCaption();
+			return;
+		}
+		
+		this.setCaptionText(title);
+
+		this.caption.retrieve('fxInstance').start({
+			bottom: 0,
+			opacity: 1	
+		});
 	},
 	
     slide: function(slideNo)
@@ -623,6 +607,7 @@ var NivooSlider = new Class({
 				var fxStyles = {
 					opacity: 1	
 				};
+
 				if(orientation == 'horizontal')
 				{
 					fxStyles.height = slice.getHeight();
@@ -659,28 +644,34 @@ var NivooSlider = new Class({
             this.animate(slice, {opacity: 1}, true);
         }
     },
-    
-    animate: function(slice, fxStyles, last)
-    {
-        var fx = slice.retrieve('fxInstance');
-		
-		var isLast = last != undefined && last == true;
-
-        fx.start(fxStyles).chain(function(){
-			this.count++;
-			if(this.count == this.options.slices || isLast)
-			{
-				this.running = false;
-
-				// fire onFinish function
-				this.finish();
-
-				this.setBackgroundImage();
+   
+	setBackgroundImage: function()
+	{
+		this.holder.setStyle('background-image','url('+this.currentImage.get('src') +')');
+	},
 	
-				this.count = 0;
-			}
-		}.bind(this));		
-    },
+	setCaptionText: function(text)
+	{
+		this.caption.set('text', text);
+	},
+	
+	setLink: function()
+	{
+		//Set active link
+		var imageParent = this.currentImage.getParent();
+
+        if(imageParent.get('tag') == 'a')
+		{
+			var clone = imageParent.clone(false).cloneEvents(imageParent);
+			clone.replaces(this.linkHolder);
+			this.linkHolder = clone;
+			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
+		}
+		else
+		{
+			this.linkHolder.setStyle('display', 'none');
+		}
+	},   
     
     /**
      * Events
@@ -689,6 +680,11 @@ var NivooSlider = new Class({
     finish: function()
     {
         this.fireEvent('finish');
+    },
+
+	lastSlide: function()
+    {
+        this.fireEvent('lastSlide');
     },
 
     start: function()

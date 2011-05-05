@@ -19,7 +19,7 @@ And the gallery structure:
 	#HTML
     <div id="Slider" class="nivoo-slider">
         <a href="#">
-            <img src="images/1269388.jpg" alt="" title="This is an example of a linked image (events will be delegated)" height="350" width="600" />
+            <img src="images/1269388.jpg" alt="" title="This is an example of a linked image" height="350" width="600" />
         </a>
         <img src="images/1268244.jpg" alt="" title="This is an example of a caption" height="350" width="600" />
         <a href="#">
@@ -82,8 +82,9 @@ Documentation
 - slices - (number: defaults to 15) Number of the slices used for the transition
 
 #### Events ####
-- start - (function) Is fired right before each transition
 - finish - (function) Is fired right after each transition
+- lastSlide - (function) Is fired when the last slide comes on
+- start - (function) Is fired right before each transition
 
 Effects
 -------
