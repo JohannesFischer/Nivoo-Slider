@@ -21,7 +21,7 @@ provides:
 
 var NivooSlider = new Class({
 
-    Implements: [Events,Options],
+    Implements: [Events, Options],
 
     caption: null,
 	children: null,
@@ -32,8 +32,8 @@ var NivooSlider = new Class({
     effects: {
 		// used for random effects
 		common: ['fade', 'fold'],
-		horizontal: ['sliceLeftUp', 'sliceLeftDown' , 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp','wipeDown','wipeUp'],
-		vertical: ['sliceDownLeft','sliceDownRight','sliceUpDownLeft','sliceUpDownRight','sliceUpLeft','sliceUpRight','wipeLeft', 'wipeRight']
+		horizontal: ['sliceLeftUp', 'sliceLeftDown', 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp', 'wipeDown', 'wipeUp'],
+		vertical: ['sliceDownLeft', 'sliceDownRight', 'sliceUpDownLeft', 'sliceUpDownRight', 'sliceUpLeft', 'sliceUpRight', 'wipeLeft', 'wipeRight']
 	},
 	holder: null,
 	hover: false,
@@ -48,7 +48,7 @@ var NivooSlider = new Class({
 		directionNav: true,
 		directionNavHide: false,
 		directionNavWidth: '20%',
-        effect: 'sliceDown', // TODO allow array with multiple effects
+        effect: 'sliceDown', // TODO allow to pass an array with multiple effects
 		interval: 3000,
 		orientation: 'vertical',
 		pauseOnHover: true,
@@ -57,12 +57,12 @@ var NivooSlider = new Class({
 		// not implemented yet
 		preLoadImages: false
 
-		//onFinish: function(){}
-		//onLastSlide: function(){}
-        //onStart: function(){}        
+		//onFinish: function () {}
+		//onLastSlide: function () {}
+        //onStart: function () {}        
     },
 
-    initialize: function(container, options)
+    initialize: function (container, options)
     {
 		this.container = $(container);
 
@@ -73,21 +73,22 @@ var NivooSlider = new Class({
 
 		this.initSlider();
 		this.createSlices();
-		if(this.options.autoPlay)
+		if (this.options.autoPlay)
 		{
 			this.play();
 		}
     },
 
-	animate: function(slice, fxStyles, last)
+	animate: function (slice, fxStyles, last)
     {
-        var fx = slice.retrieve('fxInstance');
-		
-		var isLast = last != undefined && last == true;
+        var fx, isLast;
 
-        fx.start(fxStyles).chain(function(){
-			this.count++;
-			if(this.count == this.options.slices || isLast)
+		fx = slice.retrieve('fxInstance');
+		isLast = last !== undefined && last === true;
+
+        fx.start(fxStyles).chain(function () {
+			this.count += 1;
+			if (this.count === this.options.slices || isLast)
 			{
 				this.running = false;
 
@@ -98,7 +99,7 @@ var NivooSlider = new Class({
 	
 				this.count = 0;
 				
-				if(this.currentSlide == (this.totalSlides-1))
+				if (this.currentSlide === (this.totalSlides - 1))
 				{
 					this.lastSlide();
 				}
@@ -106,7 +107,7 @@ var NivooSlider = new Class({
 		}.bind(this));		
     },
 
-createCaption: function()
+	createCaption: function ()
 	{
 		this.caption = new Element('p', {
 			styles: {
@@ -120,33 +121,35 @@ createCaption: function()
 		}));
 	},
 
-	createDirectionNav: function()
+	createDirectionNav: function ()
 	{
-		var width = this.options.directionNavWidth;
+		var directionNavStyles, leftContainer, rightContainer, width;
 
-		var directionNavStyles = {
+		width = this.options.directionNavWidth;
+
+		directionNavStyles = {
 			height: this.containerSize.y,
 			width: width
 		};
 
 		// create container
-		var leftContainer = new Element('div.direction-nav-left', {
+		leftContainer = new Element('div.direction-nav-left', {
 			styles: directionNavStyles
 		}).inject(this.holder);
 		
-		var rightContainer = new Element('div.direction-nav-right', {
+		rightContainer = new Element('div.direction-nav-right', {
 			styles: directionNavStyles
 		}).inject(this.holder);
 		
 		// create controls
 		this.leftNav = new Element('a', {
 			events: {
-				'click': function(e){
+				'click': function (e) {
 					e.stop();
-					if(this.options.autoPlay)
+					if (this.options.autoPlay)
 					{
 						this.pause();
-						if(!this.options.pauseOnHover)
+						if (!this.options.pauseOnHover)
 						{
 							this.play();
 						}
@@ -162,12 +165,12 @@ createCaption: function()
 		
 		this.rightNav = new Element('a', {
 			events: {
-				'click': function(e){
+				'click': function (e) {
 					e.stop();
-					if(this.options.autoPlay)
+					if (this.options.autoPlay)
 					{
 						this.pause();
-						if(!this.options.pauseOnHover)
+						if (!this.options.pauseOnHover)
 						{
 							this.play();
 						}
@@ -181,54 +184,55 @@ createCaption: function()
 			}
 		}).inject(rightContainer);
 
-		if(this.options.directionNavHide)
+		if (this.options.directionNavHide)
 		{
 			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
 			this.holder.addEvents({
-				'mouseout': function(){
+				'mouseout': function () {
 					$$(this.leftNav, this.rightNav).fade(0);
 				}.bind(this),
-				'mouseover': function(){
+				'mouseover': function () {
 					$$(this.leftNav, this.rightNav).fade(1);	
 				}.bind(this)
 			});
 		}
 	},
     
-	createLinkHolder: function()
+	createLinkHolder: function ()
 	{
 		this.linkHolder = new Element('a.nivoo-link', {
 			href: '#'
 		}).inject(this.holder);
 	},
 	
-    createSlices: function()
+    createSlices: function ()
     {
 		// effects that need one slice only
-		if(['fade','wipeLeft','wipeRight'].contains(this.options.effect))
+		if (['fade', 'wipeLeft', 'wipeRight'].contains(this.options.effect))
 		{
 			this.options.slices = 1;
 		}
 
 		var sliceSize = {
-			x: (this.containerSize.x/this.options.slices).round(),
-			y: (this.containerSize.y/this.options.slices).round()
+			x: (this.containerSize.x / this.options.slices).round(),
+			y: (this.containerSize.y / this.options.slices).round()
 		};
 
-        this.options.slices.each(function(i){
+        this.options.slices.each(function (i) {
+			var height, position, slice, width;
+	
+            slice = new Element('div.nivoo-slice').inject(this.holder);
 
-            var slice = new Element('div.nivoo-slice').inject(this.holder);
-
-			var position = {
-				left: this.options.orientation == 'vertical' ? sliceSize.x*i : 0,
-				top: this.options.orientation == 'horizontal' ? sliceSize.y*i : 0
+			position = {
+				left: this.options.orientation === 'vertical' ? sliceSize.x * i : 0,
+				top: this.options.orientation === 'horizontal' ? sliceSize.y * i : 0
 			};
 
 			// set size & position
-			if(this.options.orientation == 'horizontal')
+			if (this.options.orientation === 'horizontal')
 			{
-				var height = i == this.options.slices-1 ? this.containerSize.y-(sliceSize.y*i) : sliceSize.y;
-				var width = '100%';
+				height = i === this.options.slices - 1 ? this.containerSize.y - (sliceSize.y * i) : sliceSize.y;
+				width = '100%';
 
 				slice.setStyles({
 					height: height,
@@ -239,8 +243,8 @@ createCaption: function()
 			// if vertical
 			else
 			{
-				var height = 0;
-				var width = i == this.options.slices-1 ? this.containerSize.x-(sliceSize.x*i) : sliceSize.x;
+				height = 0;
+				width = i === this.options.slices - 1 ? this.containerSize.x - (sliceSize.x * i) : sliceSize.x;
 
 				slice.setStyles({
 					left: position.left,
@@ -253,17 +257,17 @@ createCaption: function()
         }, this);
     },
     
-	getImages: function()
+	getImages: function ()
 	{
 		return this.holder.getElements('img');	
 	},
 	
-    getSlices: function()
+    getSlices: function ()
     {
         return this.holder.getElements('.nivoo-slice');    
     },
 	
-    initSlider: function()
+    initSlider: function ()
     {
 		// wrap child elements
 		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
@@ -275,7 +279,7 @@ createCaption: function()
 
         this.totalSlides = this.children.length;
 
-        this.children.setStyle('display','none');
+        this.children.setStyle('display', 'none');
 
         this.currentImage = this.children[0];
 
@@ -284,45 +288,45 @@ createCaption: function()
 		this.setLink();
 
         // Set first background
-		this.holder.setStyle('background-image', 'url('+this.currentImage.get('src')+')');
+		this.holder.setStyle('background-image', 'url(' + this.currentImage.get('src') + ')');
 
 		this.createCaption();
 
 		this.showCaption();
 		
 		// attach pauseOnHover		
-		if(this.options.pauseOnHover && this.options.autoPlay)
+		if (this.options.pauseOnHover && this.options.autoPlay)
 		{
 			this.holder.addEvents({
-				'mouseenter': function(){
+				'mouseenter': function () {
 					this.pause();
 				}.bind(this),
-				'mouseleave': function(){
+				'mouseleave': function () {
 					this.play();
 				}.bind(this)
 			});
 		}
 
 		// create directional navigation
-		if(this.options.directionNav)
+		if (this.options.directionNav)
 		{
 			this.createDirectionNav();
 		}
     },
 	
-	hideCaption:function()
+	hideCaption: function ()
 	{
 		this.caption.retrieve('fxInstance').start({
 			bottom: this.caption.getHeight() * -1,
-			opacity: .5
+			opacity: 0.5
 		});
 	},
 
-	next: function()
+	next: function ()
 	{
-		this.currentSlide++;
+		this.currentSlide += 1;
 
-		if(this.currentSlide == this.totalSlides)
+		if (this.currentSlide === this.totalSlides)
 		{
 			this.currentSlide = 0;
 		}
@@ -330,30 +334,30 @@ createCaption: function()
 		this.slide();
 	},
 
-	pause: function()
+	pause: function ()
 	{
 		window.clearInterval(this.interval);
 	},
 
-	play: function()
+	play: function ()
 	{
 		this.interval = this.next.periodical(this.options.interval, this);
 	},
 	
-	previous: function()
+	previous: function ()
 	{
-		if(this.options.autoPlay)
+		if (this.options.autoPlay)
 		{
 			this.pause();
-			if(!this.options.pauseOnHover)
+			if (!this.options.pauseOnHover)
 			{
 				this.play();
 			}
 		}
 
-		this.currentSlide--;
+		this.currentSlide -= 1;
 
-        if(this.currentSlide < 0)
+        if (this.currentSlide < 0)
 		{
 			this.currentSlide = (this.totalSlides - 1);
 		}
@@ -361,11 +365,11 @@ createCaption: function()
 		this.slide();
 	},
 	
-	showCaption: function()
+	showCaption: function ()
 	{
 		var title = this.currentImage.get('title');
 
-		if(!title)
+		if (!title)
 		{
 			this.hideCaption();
 			return;
@@ -379,14 +383,16 @@ createCaption: function()
 		});
 	},
 	
-    slide: function(slideNo)
+    slide: function (slideNo)
     {
-		if(this.running)
+		var orientation, slices, timeBuff;
+		
+		if (this.running)
 		{
 			return;
 		}
 
-		if(slideNo != undefined)
+		if (slideNo !== undefined)
 		{
 			this.currentSlide = slideNo;
 		}
@@ -399,19 +405,19 @@ createCaption: function()
         // Process caption
 		this.showCaption();
 
-        var slices = this.getSlices();
-		var timeBuff = 0;
+        slices = this.getSlices();
+		timeBuff = 0;
 
 		//Set new slice backgrounds
-		var orientation = this.options.orientation;
+		orientation = this.options.orientation;
 
 		// reset slices
-        slices.each(function(slice){
+        slices.each(function (slice) {
 
 			var coordinates =  slice.retrieve('coordinates');
 
             slice.setStyles({
-                background: 'url('+this.currentImage.get('src')+') no-repeat -'+ coordinates.left +'px '+ coordinates.top*-1 +'px',
+                background: 'url(' + this.currentImage.get('src') + ') no-repeat -' + coordinates.left + 'px ' + coordinates.top * -1 + 'px',
 				bottom: '',
 				height: coordinates.height,
 				left: coordinates.left,
@@ -421,7 +427,7 @@ createCaption: function()
 				width: coordinates.width
             });
 
-			var property = orientation == 'horizontal' ? 'width' : 'height';
+			var property = orientation === 'horizontal' ? 'width' : 'height';
 
 			slice.setStyle(property, 0);
         }, this);
@@ -434,53 +440,53 @@ createCaption: function()
 
 		var effect = this.options.effect;
 
-		if(effect == 'random')
+		if (effect === 'random')
         {
             effect = this.effects[orientation].getRandom();
         }
 
 		// vertical effects
-        if(['sliceDownRight', 'sliceDownLeft'].contains(effect))
+        if (['sliceDownRight', 'sliceDownLeft'].contains(effect))
         {
-            if(effect == 'sliceDownLeft')
+            if (effect === 'sliceDownLeft')
             {
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice){
+            slices.each(function (slice) {
                 slice.setStyle('top', 0);
 
                 this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
         }
-        else if(['sliceUpRight', 'sliceUpLeft'].contains(effect))
+        else if (['sliceUpRight', 'sliceUpLeft'].contains(effect))
         {
-            if(effect == 'sliceUpLeft')
+            if (effect === 'sliceUpLeft')
             {
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice){
+            slices.each(function (slice) {
                 var fx = slice.retrieve('fxInstance');
                 
                 slice.setStyle('bottom', 0);
 
                 this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
         }
-        else if(['sliceUpDownRight', 'sliceUpDownLeft'].contains(effect))
+        else if (['sliceUpDownRight', 'sliceUpDownLeft'].contains(effect))
         {
-            if(effect == 'sliceUpDownLeft')
+            if (effect === 'sliceUpDownLeft')
             {
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice, i){
-                if(i%2 == 0)
+            slices.each(function (slice, i) {
+                if (i % 2 === 0)
                 {
                     slice.setStyle('top', 0);
                 }
@@ -494,10 +500,10 @@ createCaption: function()
 
                 this.animate.delay(100 + timeBuff, this, [slice, {height: this.containerSize.y, opacity: 1}]);
 
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
         }
-		else if(['wipeLeft', 'wipeRight'].contains(effect))
+		else if (['wipeLeft', 'wipeRight'].contains(effect))
         {
 			var styles = {
 				height: this.containerSize.y,
@@ -505,7 +511,7 @@ createCaption: function()
 				width: 0
 			};
 
-			if(effect == 'wipeRight')
+			if (effect === 'wipeRight')
 			{
 				Object.append(styles, {
 					backgroundPosition: 'top right',
@@ -521,14 +527,14 @@ createCaption: function()
         }
 
 		// horizontal effects		
-		else if(['sliceLeftUp', 'sliceLeftDown' , 'sliceRightDown', 'sliceRightUp'].contains(effect))
+		else if (['sliceLeftUp', 'sliceLeftDown', 'sliceRightDown', 'sliceRightUp'].contains(effect))
 		{
-			if(effect == 'sliceLeftUp' || effect == 'sliceRightUp')
+			if (effect === 'sliceLeftUp' || effect === 'sliceRightUp')
             {
                 slices = slices.reverse();
             }
 			
-			if(effect == 'sliceRightDown' || effect == 'sliceRightUp')
+			if (effect === 'sliceRightDown' || effect === 'sliceRightUp')
 			{
 				slices.setStyles({
 					left: '',
@@ -543,21 +549,21 @@ createCaption: function()
 				});
 			}
 
-            slices.each(function(slice){    
+            slices.each(function (slice) {    
                 this.animate.delay(100 + timeBuff, this, [slice, {opacity: 1, width: this.containerSize.x}]);
 
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
 		}
-		else if(['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect))
+		else if (['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect))
         {
-            if(effect == 'sliceLeftRightUp')
+            if (effect == 'sliceLeftRightUp')
             {
                 slices = slices.reverse();
             }
 
-            slices.each(function(slice, i){
-                if(i%2 == 0)
+            slices.each(function (slice, i){
+                if (i % 2 === 0)
                 {
                     slice.setStyles({
 						left: 0,
@@ -574,10 +580,10 @@ createCaption: function()
 
                 this.animate.delay(100 + timeBuff, this, [slice, {opacity: 1, width: this.containerSize.x}]);
 
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
         }
-		else if(['wipeDown', 'wipeUp'].contains(effect))
+		else if (['wipeDown', 'wipeUp'].contains(effect))
         {
 			var styles = {
 				height: 0,
@@ -585,7 +591,7 @@ createCaption: function()
 				width: this.containerSize.x
 			};
 
-			if(effect == 'wipeUp')
+			if (effect === 'wipeUp')
 			{
 				Object.append(styles, {
 					backgroundPosition: 'bottom left',
@@ -601,14 +607,14 @@ createCaption: function()
         }
 
 		// horizontal or vertical		
-        else if(effect == 'fold')
+        else if (effect === 'fold')
         {
-            slices.each(function(slice){
+            slices.each(function (slice) {
 				var fxStyles = {
 					opacity: 1	
 				};
 
-				if(orientation == 'horizontal')
+				if (orientation === 'horizontal')
 				{
 					fxStyles.height = slice.getHeight();
 	
@@ -629,10 +635,10 @@ createCaption: function()
 				}
 
 				this.animate.delay(100 + timeBuff, this, [slice, fxStyles]);				
-                timeBuff+= 50;
+                timeBuff += 50;
             }, this);
         }
-        else  // if(effect == 'fade')
+        else  // if (effect == 'fade')
         {
 			var slice = slices[0];
 
@@ -645,22 +651,22 @@ createCaption: function()
         }
     },
    
-	setBackgroundImage: function()
+	setBackgroundImage: function ()
 	{
-		this.holder.setStyle('background-image','url('+this.currentImage.get('src') +')');
+		this.holder.setStyle('background-image', 'url(' + this.currentImage.get('src') + ')');
 	},
 	
-	setCaptionText: function(text)
+	setCaptionText: function (text)
 	{
 		this.caption.set('text', text);
 	},
 	
-	setLink: function()
+	setLink: function ()
 	{
 		//Set active link
 		var imageParent = this.currentImage.getParent();
 
-        if(imageParent.get('tag') == 'a')
+        if (imageParent.get('tag') === 'a')
 		{
 			var clone = imageParent.clone(false).cloneEvents(imageParent);
 			clone.replaces(this.linkHolder);
@@ -677,17 +683,17 @@ createCaption: function()
      * Events
      */
     
-    finish: function()
+    finish: function ()
     {
         this.fireEvent('finish');
     },
 
-	lastSlide: function()
+	lastSlide: function ()
     {
         this.fireEvent('lastSlide');
     },
 
-    start: function()
+    start: function ()
     {
         this.fireEvent('start');
     }
