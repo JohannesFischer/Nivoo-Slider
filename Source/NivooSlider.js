@@ -81,10 +81,8 @@ var NivooSlider = new Class({
 
 	animate: function (slice, fxStyles, last)
     {
-        var fx, isLast;
-
-		fx = slice.retrieve('fxInstance');
-		isLast = last !== undefined && last === true;
+        var fx = slice.retrieve('fxInstance'),
+            isLast = last !== undefined && last === true;
 
         fx.start(fxStyles).chain(function () {
 			this.count += 1;
@@ -123,7 +121,10 @@ var NivooSlider = new Class({
 
 	createDirectionNav: function ()
 	{
-		var directionNavStyles, leftContainer, rightContainer, width;
+		var directionNavStyles,
+            leftContainer,
+            rightContainer,
+            width;
 
 		width = this.options.directionNavWidth;
 
@@ -142,6 +143,7 @@ var NivooSlider = new Class({
 		}).inject(this.holder);
 		
 		// create controls
+
 		this.leftNav = new Element('a', {
 			events: {
 				'click': function (e) {
@@ -184,7 +186,7 @@ var NivooSlider = new Class({
 			}
 		}).inject(rightContainer);
 
-		if (this.options.directionNavHide)
+		if (this.options.directionNavHide && this.options.directionNav)
 		{
 			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
 			this.holder.addEvents({
@@ -207,20 +209,24 @@ var NivooSlider = new Class({
 	
     createSlices: function ()
     {
+        var height,
+            position,
+            slice,
+            sliceSize,
+            width;
+
 		// effects that need one slice only
 		if (['fade', 'wipeLeft', 'wipeRight'].contains(this.options.effect))
 		{
 			this.options.slices = 1;
 		}
 
-		var sliceSize = {
+		sliceSize = {
 			x: (this.containerSize.x / this.options.slices).round(),
 			y: (this.containerSize.y / this.options.slices).round()
 		};
 
-        this.options.slices.each(function (i) {
-			var height, position, slice, width;
-	
+        this.options.slices.each(function (i) {	
             slice = new Element('div.nivoo-slice').inject(this.holder);
 
 			position = {
@@ -251,6 +257,7 @@ var NivooSlider = new Class({
                     width: width
                 });
 			}
+
             slice.store('fxInstance', new Fx.Morph(slice, {
                 duration: this.options.animSpeed
             })).store('coordinates', Object.merge(position, {height: height, width: width}));
@@ -385,7 +392,13 @@ var NivooSlider = new Class({
 	
     slide: function (slideNo)
     {
-		var orientation, slices, timeBuff;
+		var coordinates,
+            effect,
+            orientation,
+            slice,
+            slices,
+            styles,
+            timeBuff;
 		
 		if (this.running)
 		{
@@ -414,7 +427,7 @@ var NivooSlider = new Class({
 		// reset slices
         slices.each(function (slice) {
 
-			var coordinates =  slice.retrieve('coordinates');
+			coordinates =  slice.retrieve('coordinates');
 
             slice.setStyles({
                 background: 'url(' + this.currentImage.get('src') + ') no-repeat -' + coordinates.left + 'px ' + coordinates.top * -1 + 'px',
@@ -438,7 +451,7 @@ var NivooSlider = new Class({
         // Run effects
         this.running = true;
 
-		var effect = this.options.effect;
+		effect = this.options.effect;
 
 		if (effect === 'random')
         {
@@ -505,7 +518,7 @@ var NivooSlider = new Class({
         }
 		else if (['wipeLeft', 'wipeRight'].contains(effect))
         {
-			var styles = {
+			styles = {
 				height: this.containerSize.y,
 				opacity: 1,
 				width: 0
@@ -520,7 +533,7 @@ var NivooSlider = new Class({
 				});
 			}
 			
-			var slice = slices[0];
+			slice = slices[0];
 
 			slice.setStyles(styles);
 			this.animate(slice, {width: this.containerSize.x}, true);
@@ -557,12 +570,12 @@ var NivooSlider = new Class({
 		}
 		else if (['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect))
         {
-            if (effect == 'sliceLeftRightUp')
+            if (effect === 'sliceLeftRightUp')
             {
                 slices = slices.reverse();
             }
 
-            slices.each(function (slice, i){
+            slices.each(function (slice, i) {
                 if (i % 2 === 0)
                 {
                     slice.setStyles({
@@ -585,7 +598,7 @@ var NivooSlider = new Class({
         }
 		else if (['wipeDown', 'wipeUp'].contains(effect))
         {
-			var styles = {
+			styles = {
 				height: 0,
 				opacity: 1,
 				width: this.containerSize.x
@@ -600,7 +613,7 @@ var NivooSlider = new Class({
 				});
 			}
 			
-			var slice = slices[0];
+			slice = slices[0];
 
 			slice.setStyles(styles);
 			this.animate(slice, {height: this.containerSize.y}, true);
@@ -640,7 +653,7 @@ var NivooSlider = new Class({
         }
         else  // if (effect == 'fade')
         {
-			var slice = slices[0];
+			slice = slices[0];
 
 			slice.setStyles({
 				height: this.containerSize.y,
@@ -664,11 +677,12 @@ var NivooSlider = new Class({
 	setLink: function ()
 	{
 		//Set active link
-		var imageParent = this.currentImage.getParent();
+		var clone,
+            imageParent = this.currentImage.getParent();
 
         if (imageParent.get('tag') === 'a')
 		{
-			var clone = imageParent.clone(false).cloneEvents(imageParent);
+			clone = imageParent.clone(false).cloneEvents(imageParent);
 			clone.replaces(this.linkHolder);
 			this.linkHolder = clone;
 			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
