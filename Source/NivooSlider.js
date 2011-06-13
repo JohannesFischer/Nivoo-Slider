@@ -38,8 +38,11 @@ var NivooSlider = new Class({
 	holder: null,
 	hover: false,
 	interval: null,
+	orientation: '',
     paused: false,
     running: false,
+	slices: null,
+	sliceSize: null,
     totalSlides: 0,
 
     options: {
@@ -55,6 +58,7 @@ var NivooSlider = new Class({
 		slices: 15,
 
 		// not implemented yet
+		directionNavPosition: 'inside|outside',
 		preLoadImages: false
 
 		//onFinish: function () {}
@@ -67,6 +71,7 @@ var NivooSlider = new Class({
 		this.container = $(container);
 
 		this.setOptions(options);
+		this.orientation = this.options.orientation;
 
 		this.effects.horizontal.combine(this.effects.common);
 		this.effects.vertical.combine(this.effects.common);
@@ -104,6 +109,52 @@ var NivooSlider = new Class({
 			}
 		}.bind(this));		
     },
+
+	arrangeSlices: function (orientation)
+	{
+		var height,
+            position,
+            sliceSize,
+            width;
+
+		this.slices.each(function (el, i) {
+
+			position = {
+				left: orientation === 'vertical' ? this.sliceSize.x * i : 0,
+				top: orientation === 'horizontal' ? this.sliceSize.y * i : 0
+			};
+
+			// set size & position
+			if (orientation === 'horizontal')
+			{
+				height = i === this.options.slices - 1 ? this.containerSize.y - (this.sliceSize.y * i) : this.sliceSize.y;
+				width = '100%';
+
+				el.setStyles({
+					height: height,
+                    top: position.top,
+                    width: width
+                });
+			}
+			// if vertical
+			else
+			{
+				height = 0;
+				width = i === this.options.slices - 1 ? this.containerSize.x - (this.sliceSize.x * i) : this.sliceSize.x;
+
+				el.setStyles({
+					height: height,
+					left: position.left,
+					top: '',
+                    width: width
+                });
+			}
+
+            el.store('fxInstance', new Fx.Morph(el, {
+                duration: this.options.animSpeed
+            })).store('coordinates', Object.merge(position, {height: height, width: width}));
+        }, this);
+	},
 
 	createCaption: function ()
 	{
@@ -209,11 +260,10 @@ var NivooSlider = new Class({
 	
     createSlices: function ()
     {
-        var height,
-            position,
-            slice,
-            sliceSize,
-            width;
+		this.sliceSize = {
+			x: (this.containerSize.x / this.options.slices).round(),
+			y: (this.containerSize.y / this.options.slices).round()
+		};
 
 		// effects that need one slice only
 		if (['fade', 'wipeLeft', 'wipeRight'].contains(this.options.effect))
@@ -221,47 +271,13 @@ var NivooSlider = new Class({
 			this.options.slices = 1;
 		}
 
-		sliceSize = {
-			x: (this.containerSize.x / this.options.slices).round(),
-			y: (this.containerSize.y / this.options.slices).round()
-		};
-
         this.options.slices.each(function (i) {	
-            slice = new Element('div.nivoo-slice').inject(this.holder);
-
-			position = {
-				left: this.options.orientation === 'vertical' ? sliceSize.x * i : 0,
-				top: this.options.orientation === 'horizontal' ? sliceSize.y * i : 0
-			};
-
-			// set size & position
-			if (this.options.orientation === 'horizontal')
-			{
-				height = i === this.options.slices - 1 ? this.containerSize.y - (sliceSize.y * i) : sliceSize.y;
-				width = '100%';
-
-				slice.setStyles({
-					height: height,
-                    top: position.top,
-                    width: width
-                });
-			}
-			// if vertical
-			else
-			{
-				height = 0;
-				width = i === this.options.slices - 1 ? this.containerSize.x - (sliceSize.x * i) : sliceSize.x;
-
-				slice.setStyles({
-					left: position.left,
-                    width: width
-                });
-			}
-
-            slice.store('fxInstance', new Fx.Morph(slice, {
-                duration: this.options.animSpeed
-            })).store('coordinates', Object.merge(position, {height: height, width: width}));
+            new Element('div.nivoo-slice').inject(this.holder);
         }, this);
+		
+		this.slices = this.getSlices();
+
+		this.arrangeSlices(this.options.orientation);
     },
     
 	getImages: function ()
@@ -405,6 +421,21 @@ var NivooSlider = new Class({
 			return;
 		}
 
+		if (this.options.orientation === 'random')
+		{
+			orientation = ['horizontal', 'vertical'].getRandom();
+		}
+		else
+		{
+			orientation = this.options.orientation;
+		}
+		
+		if (orientation !== this.orientation)
+		{
+			this.arrangeSlices(orientation);
+			this.orientation = orientation;
+		}
+
 		if (slideNo !== undefined)
 		{
 			this.currentSlide = slideNo;
@@ -418,14 +449,12 @@ var NivooSlider = new Class({
         // Process caption
 		this.showCaption();
 
-        slices = this.getSlices();
+		// TODO use this.slices within each loop instead
+        slices = this.slices;
 		timeBuff = 0;
 
-		//Set new slice backgrounds
-		orientation = this.options.orientation;
-
 		// reset slices
-        slices.each(function (slice) {
+        this.slices.each(function (slice) {
 
 			coordinates =  slice.retrieve('coordinates');
 
