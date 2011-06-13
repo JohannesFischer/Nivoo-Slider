@@ -10,13 +10,13 @@ How to use
 
 Just include NivooSider.js and the NivooSlider.css to your HTML:
 
-	#HTML
+#HTML
 	<script type="text/javascript" src="NivooSlider.js"></script>
 	<link  href="NivooSlider.css" rel="stylesheet" type="text/css" media="screen" />
 	
 And the gallery structure:
 	
-	#HTML
+#HTML
     <div id="Slider" class="nivoo-slider">
         <a href="#">
             <img src="images/1269388.jpg" alt="" title="This is an example of a linked image" height="350" width="600" />
@@ -30,7 +30,7 @@ And the gallery structure:
 	
 And then initialize the slider using the domready event:
 
-	#JS
+#JS
 	window.addEvent('domready',function(){
 
 		// The simple way
@@ -61,8 +61,8 @@ Documentation
 
 ### Syntax ###
 
-	#JS
-	var slider = new NivooSlider(element[, options]);
+#JS
+    var slider = new NivooSlider(element[, options]);
 	
 #### Arguments ####
 1. element - (mixed) An Element or the string id of an Element to apply the gallery to.
@@ -77,9 +77,9 @@ Documentation
 - directionNavWidth - (number,string: defaults to 20%) Width of the clickable area of the directional navigation. Can be a number for pixels or a string with a percentage of the full width.
 - effect - (string: defaults to sliceDown) Type of transition (see effects),
 - interval - (number: defaults to 3000) Interval in ms between the transitions, required for the autoPlay function
-- orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal or vertical
+- orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal, random or vertical
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
-- slices - (number: defaults to 15) Number of the slices used for the transition
+- slices - (number: defaults to 15) Number of the slices used for the transitions
 
 #### Events ####
 - finish - (function) Is fired right after each transition
