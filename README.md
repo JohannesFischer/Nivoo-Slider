@@ -1,22 +1,18 @@
-Nivoo-Slider
-============
+# Nivoo-Slider #
 
 The Nivoo-Slider is an image gallery based on the jQuery Plugin NivoSlider (http://nivo.dev7studios.com/). It features 18 different transition effects.
 
 ![Screenshot 1](http://www.johannes-fischer.de/assets/Labs/nivoo-slider.png)
 
-How to use
-----------
+## How to use ##
 
 Just include NivooSider.js and the NivooSlider.css to your HTML:
 
-#HTML
 	<script type="text/javascript" src="NivooSlider.js"></script>
 	<link  href="NivooSlider.css" rel="stylesheet" type="text/css" media="screen" />
 	
 And the gallery structure:
-	
-#HTML
+
     <div id="Slider" class="nivoo-slider">
         <a href="#">
             <img src="images/1269388.jpg" alt="" title="This is an example of a linked image" height="350" width="600" />
@@ -30,45 +26,42 @@ And the gallery structure:
 	
 And then initialize the slider using the domready event:
 
-#JS
-	window.addEvent('domready',function(){
+    <script type="text/javascript">
+        window.addEvent('domready', function () {
+            // The simple way
+            new NivooSlider($('Slider'));
+            
+            // The more advanced way
+            new NivooSlider($('Slider'), {
+                animSpeed: 750,
+                effect: 'sliceLeftRightDown',
+                interval: 5000,
+                orientation: 'horizontal',
+                slices: 20
+            }).addEvents({
+                'onFinish': function(){
+                    // fired after each transition
+                },
+                'onStart': function(){
+                    // fired right before each transition
+                }
+            });
+        }
+    </script>
 
-		// The simple way
-		new NivooSlider($('Slider'));
-		
-		// The more advanced way
-		new NivooSlider($('Slider'), {
-            animSpeed: 750,
-            effect: 'sliceLeftRightDown',
-			interval: 5000,
-            orientation: 'horizontal',
-			slices: 20
-        }).addEvents({
-            'onFinish': function(){
-                // fired after each transition
-            },
-            'onStart': function(){
-                // fired right before each transition
-            }
-        });
+## Documentation ##
 
-	}
+### Class: NivooSlider ###
 
-Documentation
--------------
+##### Syntax #####
 
-## Class: NivooSlider ##
-
-### Syntax ###
-
-#JS
     var slider = new NivooSlider(element[, options]);
 	
-#### Arguments ####
+###### Arguments ######
 1. element - (mixed) An Element or the string id of an Element to apply the gallery to.
 2. options - (object, optional) The Nivoo-Slider options object, described below:
 
-#### Options ####
+###### Options ######
 - animSpeed - (number: defaults to 500) The time (duration) in ms of the transition
 - autoPlay - (bool: defaults to true) Start the transition automatically after initializing
 - cssClass - (string, defaults to nivooSlider) Name of the css class that is added after initializing the slider
@@ -81,20 +74,19 @@ Documentation
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
 - slices - (number: defaults to 15) Number of the slices used for the transitions
 
-#### Events ####
+###### Events ######
 - finish - (function) Is fired right after each transition
 - lastSlide - (function) Is fired when the last slide comes on
 - start - (function) Is fired right before each transition
 
-Effects
--------
+#### Effects ####
 
-#### horizontal & vertical ####
+###### horizontal & vertical ######
 - fade
 - fold
 - random
 
-#### horizontal ####
+###### horizontal ######
 - sliceLeftDown
 - sliceLeftUp
 - sliceLeftRightDown
@@ -104,7 +96,7 @@ Effects
 - wipeDown
 - wipeUp
 
-#### vertical ####
+###### vertical ######
 - sliceDownLeft
 - sliceDownRight
 - sliceUpDownLeft
@@ -114,10 +106,10 @@ Effects
 - wipeLeft
 - wipeRight
 
-Coming Features
----------------
+## Coming Features ##
+
 - preloading images
 
-License
--------
+## License ##
+
 MIT-style license.
