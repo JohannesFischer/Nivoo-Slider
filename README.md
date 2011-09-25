@@ -6,7 +6,7 @@ The Nivoo-Slider is an image gallery based on the jQuery Plugin NivoSlider (http
 
 ## How to use ##
 
-Just include NivooSider.js and the NivooSlider.css to your HTML:
+Just include NivooSider.js and the NivooSlider.css to your the head section of your HTML file:
 
 	<script type="text/javascript" src="NivooSlider.js"></script>
 	<link  href="NivooSlider.css" rel="stylesheet" type="text/css" media="screen" />
@@ -26,28 +26,29 @@ And the gallery structure:
 	
 And then initialize the slider using the domready event:
 
-    <script type="text/javascript">
-        window.addEvent('domready', function () {
-            // The simple way
-            new NivooSlider($('Slider'));
-            
-            // The more advanced way
-            new NivooSlider($('Slider'), {
-                animSpeed: 750,
-                effect: 'sliceLeftRightDown',
-                interval: 5000,
-                orientation: 'horizontal',
-                slices: 20
-            }).addEvents({
-                'onFinish': function(){
-                    // fired after each transition
-                },
-                'onStart': function(){
-                    // fired right before each transition
-                }
-            });
-        }
-    </script>
+    window.addEvent('domready', function () {
+        // The simple way
+        new NivooSlider($('Slider'));
+        
+        // The more advanced way
+        new NivooSlider($('Slider'), {
+            animSpeed: 750,
+            effect: 'sliceLeftRightDown',
+            interval: 5000,
+            orientation: 'horizontal',
+            slices: 20
+        }).addEvents({
+            'onFinish': function () {
+                // fired after each transition
+            },
+            'onLastSlide': function () {
+                // fired when the last slide comes on
+            },
+            'onStart': function () {
+                // fired right before each transition
+            }
+        });
+    }
 
 ## Documentation ##
 
