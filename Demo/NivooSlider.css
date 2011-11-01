@@ -51,10 +51,10 @@
         outline: none;
     }
     .direction-nav-left a {
-        background: url(images/arrow-left.png) no-repeat 2% 50%;
+        background: url(images/icons/arrow-left.png) no-repeat 2% 50%;
     }
     .direction-nav-right a {
-        background: url(images/arrow-right.png) no-repeat 98% 50%;
+        background: url(images/icons/arrow-right.png) no-repeat 98% 50%;
     }
 
 .nivoo-slice {

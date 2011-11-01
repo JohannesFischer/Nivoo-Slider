@@ -11,6 +11,7 @@ h1 {
     font-size: 24px;
     line-height: 24px;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 0 #fff;
 }
 a img {
     border: none;
