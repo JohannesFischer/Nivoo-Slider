@@ -11,7 +11,7 @@ authors:
 - Johannes Fischer
 
 requires:
-- core/1.3: '*'
+- core/1.4: '*'
 
 provides:
 - NivooSlider
@@ -50,6 +50,7 @@ var NivooSlider = new Class({
         autoPlay: true,
 		directionNav: true,
 		directionNavHide: false,
+        directionNavPosition: 'inside',
 		directionNavWidth: '20%',
         effect: 'sliceDown', // TODO allow to pass an array with multiple effects
 		interval: 3000,
@@ -58,7 +59,8 @@ var NivooSlider = new Class({
 		slices: 15,
 
 		// not implemented yet
-		directionNavPosition: 'inside|outside',
+        pagination: true,
+        paginationItem: 'decimal|disc|square|html-entity',
 		preLoadImages: false
 
 		//onFinish: function () {}
@@ -175,23 +177,28 @@ var NivooSlider = new Class({
 		var directionNavStyles,
             leftContainer,
             rightContainer,
+            target,
             width;
 
+        target = this.options.directionNavPosition === 'inside' ? this.holder : this.container;
 		width = this.options.directionNavWidth;
 
 		directionNavStyles = {
-			height: this.containerSize.y,
-			width: width
+			height: this.containerSize.y
 		};
+        
+        if (this.options.directionNavPosition === 'inside' && this.options.directionNavWidth.toInt() !== 0) {
+            directionNavStyles.width = width;
+        }
 
 		// create container
 		leftContainer = new Element('div.direction-nav-left', {
 			styles: directionNavStyles
-		}).inject(this.holder);
+		}).inject(target);
 		
 		rightContainer = new Element('div.direction-nav-right', {
 			styles: directionNavStyles
-		}).inject(this.holder);
+		}).inject(target);
 		
 		// create controls
 
@@ -215,7 +222,7 @@ var NivooSlider = new Class({
 				height: directionNavStyles.height
 			}
 		}).inject(leftContainer);
-		
+
 		this.rightNav = new Element('a', {
 			events: {
 				'click': function (e) {
@@ -292,6 +299,9 @@ var NivooSlider = new Class({
 	
     initSlider: function ()
     {
+        if (this.options.directionNavPosition === 'outside') {
+            this.container.addClass('direction-nav-outside');
+        }
 		// wrap child elements
 		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
 
