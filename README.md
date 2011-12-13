@@ -68,6 +68,7 @@ And then initialize the slider using the domready event:
 - cssClass - (string, defaults to nivooSlider) Name of the css class that is added after initializing the slider
 - directionNav -(bool: deafults to true) Shows controls to go back and forth
 - directionNavHide - (bool: defaults to false) Hides the navigation controls on mouseout, so they are only visible when the mouse cursor is over the slider element
+- directionNavPosition -(string: deafult is inside) Place of the directional navigation, can be inside or outside. When positioned outside the css-class direction-nav-outside will be added to the slider-container
 - directionNavWidth - (number,string: defaults to 20%) Width of the clickable area of the directional navigation. Can be a number for pixels or a string with a percentage of the full width.
 - effect - (string: defaults to sliceDown) Type of transition (see effects),
 - interval - (number: defaults to 3000) Interval in ms between the transitions, required for the autoPlay function

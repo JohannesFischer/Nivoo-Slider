@@ -21,7 +21,9 @@ a img {
     width: 800px;
 }
 #Slider {
+    margin-bottom: 20px;
+    overflow: visible;
+}
+.nivoo-slider-holder {
     box-shadow: 0 0 10px rgba(100, 100, 100, .8);
-    -moz-box-shadow: 0 0 10px rgba(100, 100, 100, .8);
-    margin: 0 0 20px;
 }

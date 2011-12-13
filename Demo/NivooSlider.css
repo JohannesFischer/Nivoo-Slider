@@ -5,6 +5,12 @@
     position: relative;
     width: 600px;
 }
+.nivoo-slider.direction-nav-outside {
+    width: 720px;
+}
+.direction-nav-outside .nivoo-slider-holder {
+    margin: 0 60px;
+}
 
 .nivoo-slider-holder {
 	background-repeat: no-repeat;
@@ -36,6 +42,8 @@
 .direction-nav-right {
     right: 0;
 }
+
+/* directioNavPosition inside */
 .direction-nav-left,
 .direction-nav-right {
     position: absolute;
@@ -56,6 +64,12 @@
     .direction-nav-right a {
         background: url(images/icons/arrow-right.png) no-repeat 98% 50%;
     }
+    
+/* directioNavPosition oustide */
+.direction-nav-outside .direction-nav-left,
+.direction-nav-outside .direction-nav-right {
+    width: 60px;
+}
 
 .nivoo-slice {
 	display: block;
