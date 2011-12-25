@@ -5,6 +5,9 @@
     position: relative;
     width: 600px;
 }
+.nivoo-slider.got-control-nav {
+    height: 380px;
+}
 .nivoo-slider.direction-nav-outside {
     width: 720px;
 }
@@ -94,3 +97,29 @@
 	width: 100%;
     z-index: 30;
 }
+
+/* control navigation */
+
+div.control-nav {
+    height: 20px;
+    line-height: 20px;
+    margin: 10px 0 0;
+    text-align: center;
+    }
+    div.control-nav a {
+        color: #aaa;
+        font-size: 40px;
+        outline: none;
+        padding: 2px;
+        text-decoration: none;
+        text-shadow: 0 0 2px #ddd;
+        -moz-transition: color 1s;
+        -ms-transition: color 1s;
+        -o-transition: color 1s;
+        -webkit-transition: color 1s;
+        transition: color 1s;
+        }
+        div.control-nav a.current,
+        div.control-nav a:hover {
+            color: #333;
+        }

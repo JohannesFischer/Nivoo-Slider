@@ -48,6 +48,7 @@ var NivooSlider = new Class({
     options: {
         animSpeed: 500,
         autoPlay: true,
+        controlNav: true,
 		directionNav: true,
 		directionNavHide: false,
         directionNavPosition: 'inside',
@@ -58,9 +59,8 @@ var NivooSlider = new Class({
 		pauseOnHover: true,
 		slices: 15,
 
-		// not implemented yet
-        pagination: true,
-        paginationItem: 'decimal|disc|square|html-entity',
+		// not implemented yet        
+        controlNavItem: 'decimal|disc|square|html-entity',
 		preLoadImages: false
 
 		//onFinish: function () {}
@@ -171,6 +171,28 @@ var NivooSlider = new Class({
 			wait: false
 		}));
 	},
+    
+    createControlNav: function ()
+    {
+        this.container.addClass('got-control-nav');
+
+        new Element('div.control-nav').inject(this.container);
+
+        this.totalSlides.each(function (el) {
+            new Element('a', {
+                events: {
+                    'click': function (e) {
+                        e.stop();
+                        this.slide(el);    
+                    }.bind(this)
+                },
+                href: '#',
+                html: '&bullet;'
+            }).inject(this.container.getElement('div.control-nav'))
+        }, this);
+
+        this.setCurrentControlItem();
+    },
 
 	createDirectionNav: function ()
 	{
@@ -345,6 +367,12 @@ var NivooSlider = new Class({
 		{
 			this.createDirectionNav();
 		}
+        
+        // create control navigation
+        if (this.options.controlNav)
+        {
+            this.createControlNav();
+        }
     },
 	
 	hideCaption: function ()
@@ -397,6 +425,18 @@ var NivooSlider = new Class({
 
 		this.slide();
 	},
+    
+    setCurrentControlItem: function ()
+    {
+        var active = this.container.getElement('div.control-nav a.current');
+
+        if (active)
+        {
+            active.removeClass('current');
+        }
+        
+        this.container.getElements('div.control-nav a')[this.currentSlide].addClass('current');
+    },
 	
 	showCaption: function ()
 	{
@@ -451,8 +491,14 @@ var NivooSlider = new Class({
 			this.currentSlide = slideNo;
 		}
 
-        // Set currentImage
+        // set currentImage
         this.currentImage = this.children[this.currentSlide];
+        
+        // set current control nav item
+        if (this.options.controlNav)
+        {
+            this.setCurrentControlItem();
+        }
 
         this.setLink();
 
