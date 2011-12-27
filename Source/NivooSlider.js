@@ -187,8 +187,8 @@ var NivooSlider = new Class({
                     }.bind(this)
                 },
                 href: '#',
-                html: '&bullet;'
-            }).inject(this.container.getElement('div.control-nav'))
+                html: '&bull;'
+            }).inject(this.container.getElement('div.control-nav'));
         }, this);
 
         this.setCurrentControlItem();
