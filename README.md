@@ -67,7 +67,6 @@ And then initialize the slider using the domready event:
 - autoPlay - (bool: defaults to true) Start the transition automatically after initializing
 - controlNav: (bool: defauls to true) Add a control navigation (bullet points) below the slider
 - controlNavItem: (string: defauls to disc) Sets the character used in the control navigation, can be disc, decimal, or any other string / html entity
-- cssClass - (string, defaults to nivooSlider) Name of the css class that is added after initializing the slider
 - directionNav -(bool: deafults to true) Shows controls to go back and forth
 - directionNavHide - (bool: defaults to false) Hides the navigation controls on mouseout, so they are only visible when the mouse cursor is over the slider element
 - directionNavPosition -(string: deafult is inside) Place of the directional navigation, can be inside or outside. When positioned outside the css-class direction-nav-outside will be added to the slider-container
