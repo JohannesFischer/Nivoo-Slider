@@ -108,7 +108,7 @@ div.control-nav {
     }
     div.control-nav a {
         color: #aaa;
-        font-size: 40px;
+		font-size: 20px;
         outline: none;
         padding: 2px;
         text-decoration: none;
@@ -119,6 +119,9 @@ div.control-nav {
         -webkit-transition: color 1s;
         transition: color 1s;
         }
+		div.control-nav .disc {
+			font-size: 40px;
+		}
         div.control-nav a.current,
         div.control-nav a:hover {
             color: #333;

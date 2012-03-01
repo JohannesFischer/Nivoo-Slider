@@ -49,6 +49,7 @@ var NivooSlider = new Class({
         animSpeed: 500,
         autoPlay: true,
         controlNav: true,
+		controlNavItem: 'disc', //'decimal|disc|html-entity',
 		directionNav: true,
 		directionNavHide: false,
         directionNavPosition: 'inside',
@@ -60,7 +61,6 @@ var NivooSlider = new Class({
 		slices: 15,
 
 		// not implemented yet        
-        controlNavItem: 'decimal|disc|square|html-entity',
 		preLoadImages: false
 
 		//onFinish: function () {}
@@ -174,12 +174,27 @@ var NivooSlider = new Class({
     
     createControlNav: function ()
     {
+		var cssClass = '',
+		    html,
+		    i = 1;
+
         this.container.addClass('got-control-nav');
 
         new Element('div.control-nav').inject(this.container);
 
         this.totalSlides.each(function (el) {
+			if (this.options.controlNavItem === 'decimal') {
+				html = i;
+				i++;
+			} else if (this.options.controlNavItem === 'disc') {
+				cssClass = 'decimal';
+				html = '&bull;';
+			} else {
+				html = this.options.controlNavItem;
+			}
+
             new Element('a', {
+				'class': cssClass,
                 events: {
                     'click': function (e) {
                         e.stop();
@@ -187,7 +202,7 @@ var NivooSlider = new Class({
                     }.bind(this)
                 },
                 href: '#',
-                html: '&bull;'
+                html: html
             }).inject(this.container.getElement('div.control-nav'));
         }, this);
 
