@@ -342,7 +342,7 @@ var NivooSlider = new Class({
 		// wrap child elements
 		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
 
-        this.containerSize = this.holder.getSize();
+        this.containerSize = this.holder.getParent('.nivoo-slider').getSize();
 
         // Find our slider children
         this.children = this.getImages();
