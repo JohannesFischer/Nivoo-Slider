@@ -358,7 +358,7 @@ var NivooSlider = new Class({
 		this.setLink();
 
         // Set first background
-		this.holder.setStyle('background-image', 'url(' + this.currentImage.get('src') + ')');
+		this.setBackgroundImage();
 
 		this.createCaption();
 
@@ -530,7 +530,7 @@ var NivooSlider = new Class({
 			coordinates =  slice.retrieve('coordinates');
 
             slice.setStyles({
-                background: 'url(' + this.currentImage.get('src') + ') no-repeat -' + coordinates.left + 'px ' + coordinates.top * -1 + 'px',
+                background: 'url("' + this.currentImage.get('src') + '") no-repeat -' + coordinates.left + 'px ' + coordinates.top * -1 + 'px',
 				bottom: '',
 				height: coordinates.height,
 				left: coordinates.left,
@@ -766,7 +766,7 @@ var NivooSlider = new Class({
    
 	setBackgroundImage: function ()
 	{
-		this.holder.setStyle('background-image', 'url(' + this.currentImage.get('src') + ')');
+		this.holder.setStyle('background-image', 'url("' + this.currentImage.get('src') + '")');
 	},
 	
 	setCaptionText: function (text)
