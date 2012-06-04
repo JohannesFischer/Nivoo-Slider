@@ -31,9 +31,9 @@ var NivooSlider = new Class({
     currentImage: '',
     effects: {
 		// used for random effects
-		common: ['fade', 'fold'],
-		horizontal: ['sliceLeftUp', 'sliceLeftDown', 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp', 'wipeDown', 'wipeUp'],
-		vertical: ['sliceDownLeft', 'sliceDownRight', 'sliceUpDownLeft', 'sliceUpDownRight', 'sliceUpLeft', 'sliceUpRight', 'wipeLeft', 'wipeRight']
+		common: ['fade'],
+		horizontal: ['foldDown', 'foldUp', 'sliceLeftUp', 'sliceLeftDown', 'sliceLeftRightDown', 'sliceLeftRightUp', 'sliceRightDown', 'sliceRightUp', 'wipeDown', 'wipeUp'],
+		vertical: ['foldLeft', 'foldRight', 'sliceDownLeft', 'sliceDownRight', 'sliceUpDownLeft', 'sliceUpDownRight', 'sliceUpLeft', 'sliceUpRight', 'wipeLeft', 'wipeRight']
 	},
 	holder: null,
 	hover: false,
@@ -49,7 +49,7 @@ var NivooSlider = new Class({
         animSpeed: 500,
         autoPlay: true,
         controlNav: true,
-		controlNavItem: 'disc', //'decimal|disc|html-entity',
+		controlNavItem: 'disc',
 		directionNav: true,
 		directionNavHide: false,
         directionNavPosition: 'inside',
@@ -68,20 +68,19 @@ var NivooSlider = new Class({
         //onStart: function () {}        
     },
 
-    initialize: function (container, options)
-    {
+    initialize: function (container, options) {
 		this.container = $(container);
 
 		this.setOptions(options);
-		this.orientation = this.options.orientation;
+		this.orientation = this.getOrientation();
 
 		this.effects.horizontal.combine(this.effects.common);
 		this.effects.vertical.combine(this.effects.common);
 
 		this.initSlider();
 		this.createSlices();
-		if (this.options.autoPlay)
-		{
+
+		if (this.options.autoPlay) {
 			this.play();
 		}
     },
@@ -104,16 +103,14 @@ var NivooSlider = new Class({
 	
 				this.count = 0;
 				
-				if (this.currentSlide === (this.totalSlides - 1))
-				{
+				if (this.currentSlide === (this.totalSlides - 1)) {
 					this.lastSlide();
 				}
 			}
 		}.bind(this));		
     },
 
-	arrangeSlices: function (orientation)
-	{
+	arrangeSlices: function () {
 		var height,
             position,
             sliceSize,
@@ -122,13 +119,12 @@ var NivooSlider = new Class({
 		this.slices.each(function (el, i) {
 
 			position = {
-				left: orientation === 'vertical' ? this.sliceSize.x * i : 0,
-				top: orientation === 'horizontal' ? this.sliceSize.y * i : 0
+				left: this.orientation === 'vertical' ? this.sliceSize.x * i : 0,
+				top: this.orientation === 'horizontal' ? this.sliceSize.y * i : 0
 			};
 
 			// set size & position
-			if (orientation === 'horizontal')
-			{
+			if (this.orientation === 'horizontal') {
 				height = i === this.options.slices - 1 ? this.containerSize.y - (this.sliceSize.y * i) : this.sliceSize.y;
 				width = '100%';
 
@@ -137,10 +133,7 @@ var NivooSlider = new Class({
                     top: position.top,
                     width: width
                 });
-			}
-			// if vertical
-			else
-			{
+			} else { // if vertical
 				height = 0;
 				width = i === this.options.slices - 1 ? this.containerSize.x - (this.sliceSize.x * i) : this.sliceSize.x;
 
@@ -158,8 +151,7 @@ var NivooSlider = new Class({
         }, this);
 	},
 
-	createCaption: function ()
-	{
+	createCaption: function () {
 		this.caption = new Element('p', {
 			styles: {
 				opacity: 0
@@ -172,8 +164,7 @@ var NivooSlider = new Class({
 		}));
 	},
     
-    createControlNav: function ()
-    {
+    createControlNav: function () {
 		var cssClass = '',
 		    html,
 		    i = 1;
@@ -209,8 +200,7 @@ var NivooSlider = new Class({
         this.setCurrentControlItem();
     },
 
-	createDirectionNav: function ()
-	{
+	createDirectionNav: function () {
 		var directionNavStyles,
             leftContainer,
             rightContainer,
@@ -321,28 +311,35 @@ var NivooSlider = new Class({
 		
 		this.slices = this.getSlices();
 
-		this.arrangeSlices(this.options.orientation);
+		this.arrangeSlices();
     },
     
-	getImages: function ()
-	{
+	getImages: function () {
 		return this.holder.getElements('img');	
 	},
 	
-    getSlices: function ()
-    {
+	getOrientation: function () {
+		if (this.effects.horizontal.indexOf(this.options.effect) > -1) {
+			return 'horizontal';
+		} else if (this.effects.vertical.indexOf(this.options.effect) > -1) {
+			return 'vertical';
+		} else {
+			return this.options.orientation;
+		}
+	},
+	
+    getSlices: function () {
         return this.holder.getElements('.nivoo-slice');    
     },
 	
-    initSlider: function ()
-    {
+    initSlider: function () {
         if (this.options.directionNavPosition === 'outside') {
             this.container.addClass('direction-nav-outside');
         }
 		// wrap child elements
 		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
 
-        this.containerSize = this.holder.getParent('.nivoo-slider').getSize();
+        this.containerSize = this.holder.getSize();
 
         // Find our slider children
         this.children = this.getImages();
@@ -471,38 +468,25 @@ var NivooSlider = new Class({
 		});
 	},
 	
-    slide: function (slideNo)
-    {
+    slide: function (slideNo) {
 		var coordinates,
             effect,
-            orientation,
             slice,
             slices,
             styles,
             timeBuff;
 		
-		if (this.running)
-		{
+		if (this.running) {
 			return;
 		}
 
-		if (this.options.orientation === 'random')
-		{
-			orientation = ['horizontal', 'vertical'].getRandom();
-		}
-		else
-		{
-			orientation = this.options.orientation;
+		if (this.orientation === 'random') {
+			this.orientation = ['horizontal', 'vertical'].getRandom();
 		}
 		
-		if (orientation !== this.orientation)
-		{
-			this.arrangeSlices(orientation);
-			this.orientation = orientation;
-		}
+		this.arrangeSlices();
 
-		if (slideNo !== undefined)
-		{
+		if (slideNo !== undefined) {
 			this.currentSlide = slideNo;
 		}
 
@@ -510,8 +494,7 @@ var NivooSlider = new Class({
         this.currentImage = this.children[this.currentSlide];
         
         // set current control nav item
-        if (this.options.controlNav)
-        {
+        if (this.options.controlNav) {
             this.setCurrentControlItem();
         }
 
@@ -540,7 +523,7 @@ var NivooSlider = new Class({
 				width: coordinates.width
             });
 
-			var property = orientation === 'horizontal' ? 'width' : 'height';
+			var property = this.orientation === 'horizontal' ? 'width' : 'height';
 
 			slice.setStyle(property, 0);
         }, this);
@@ -553,14 +536,12 @@ var NivooSlider = new Class({
 
 		effect = this.options.effect;
 
-		if (effect === 'random')
-        {
-            effect = this.effects[orientation].getRandom();
+		if (effect === 'random') {
+            effect = this.effects[this.orientation].getRandom();
         }
 
 		// vertical effects
-        if (['sliceDownRight', 'sliceDownLeft'].contains(effect))
-        {
+        if (['sliceDownRight', 'sliceDownLeft'].contains(effect)) {
             if (effect === 'sliceDownLeft')
             {
                 slices = slices.reverse();
@@ -573,9 +554,7 @@ var NivooSlider = new Class({
 
                 timeBuff += 50;
             }, this);
-        }
-        else if (['sliceUpRight', 'sliceUpLeft'].contains(effect))
-        {
+        } else if (['sliceUpRight', 'sliceUpLeft'].contains(effect)) {
             if (effect === 'sliceUpLeft')
             {
                 slices = slices.reverse();
@@ -642,20 +621,16 @@ var NivooSlider = new Class({
 		// horizontal effects		
 		else if (['sliceLeftUp', 'sliceLeftDown', 'sliceRightDown', 'sliceRightUp'].contains(effect))
 		{
-			if (effect === 'sliceLeftUp' || effect === 'sliceRightUp')
-            {
+			if (effect === 'sliceLeftUp' || effect === 'sliceRightUp') {
                 slices = slices.reverse();
             }
 			
-			if (effect === 'sliceRightDown' || effect === 'sliceRightUp')
-			{
+			if (effect === 'sliceRightDown' || effect === 'sliceRightUp') {
 				slices.setStyles({
 					left: '',
 					right: 0
 				});
-			}
-			else
-			{
+			} else {
 				slices.setStyles({
 					left: 0,
 					right: ''
@@ -667,24 +642,18 @@ var NivooSlider = new Class({
 
                 timeBuff += 50;
             }, this);
-		}
-		else if (['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect))
-        {
-            if (effect === 'sliceLeftRightUp')
-            {
+		} else if (['sliceLeftRightDown', 'sliceLeftRightUp'].contains(effect)) {
+            if (effect === 'sliceLeftRightUp') {
                 slices = slices.reverse();
             }
 
             slices.each(function (slice, i) {
-                if (i % 2 === 0)
-                {
+                if (i % 2 === 0) {
                     slice.setStyles({
 						left: 0,
 						right: ''
 					});
-                }
-                else
-                {
+                } else {
                     slice.setStyles({
 						left: '',
 						right: 0
@@ -695,9 +664,7 @@ var NivooSlider = new Class({
 
                 timeBuff += 50;
             }, this);
-        }
-		else if (['wipeDown', 'wipeUp'].contains(effect))
-        {
+        } else if (['wipeDown', 'wipeUp'].contains(effect)) {
 			styles = {
 				height: 0,
 				opacity: 1,
@@ -717,32 +684,29 @@ var NivooSlider = new Class({
 
 			slice.setStyles(styles);
 			this.animate(slice, {height: this.containerSize.y}, true);
-        }
-
-		// horizontal or vertical		
-        else if (effect === 'fold')
-        {
+        } else if (['foldDown', 'foldLeft', 'foldRight', 'foldUp'].contains(effect)) {
+			
+			if (effect === 'foldUp' || effect === 'foldLeft') {
+				slices.reverse();
+			}
+			
             slices.each(function (slice) {
 				var fxStyles = {
 					opacity: 1	
 				};
 
-				if (orientation === 'horizontal')
-				{
+				if (this.orientation === 'horizontal') {
 					fxStyles.height = slice.getHeight();
 	
 					slice.setStyles({
 						height: 0,
 						width: this.containerSize.x
 					});
-				}
-				else
-				{
-					fxStyles.width = slice.getWidth();
+				} else {
+					fxStyles.width= slice.getWidth();
 	
 					slice.setStyles({
 						height: this.containerSize.y,
-						top: 0,
 						width: 0
 					});
 				}
@@ -764,8 +728,7 @@ var NivooSlider = new Class({
         }
     },
    
-	setBackgroundImage: function ()
-	{
+	setBackgroundImage: function () {
 		this.holder.setStyle('background-image', 'url("' + this.currentImage.get('src') + '")');
 	},
 	
@@ -791,24 +754,21 @@ var NivooSlider = new Class({
 		{
 			this.linkHolder.setStyle('display', 'none');
 		}
-	},   
-    
+	},
+
     /**
      * Events
      */
     
-    finish: function ()
-    {
+    finish: function () {
         this.fireEvent('finish');
     },
 
-	lastSlide: function ()
-    {
+	lastSlide: function () {
         this.fireEvent('lastSlide');
     },
 
-    start: function ()
-    {
+    start: function () {
         this.fireEvent('start');
     }
 
