@@ -48,6 +48,12 @@ And then initialize the slider using the domready event:
                 // fired right before each transition
             }
         });
+
+		// add an if statement to check for the slider element (e.g. in a global script)
+		// in this way you can add the code even if the slider element doesn't exist on the current page
+		if ($('Slider')) {
+			new NivooSlider($('Slider'));
+		}
     }
 
 ## Documentation ##
@@ -108,10 +114,6 @@ And then initialize the slider using the domready event:
 - sliceUpRight
 - wipeLeft
 - wipeRight
-
-## Coming Features ##
-
-- preloading images
 
 ## License ##
 
