@@ -80,6 +80,7 @@ And then initialize the slider using the domready event:
 - effect - (string: defaults to sliceDown) Type of transition (see effects),
 - interval - (number: defaults to 3000) Interval in ms between the transitions, required for the autoPlay function
 - orientation - (string: defaults to vertical) Defines the direction of the transition, can be horizontal, random or vertical
+- pauseOnBlur - (bool: defaults to false) Pauses the Animation when the window is not focused
 - pauseOnHover - (bool: defaults to true) Clears the interval on mouseover
 - slices - (number: defaults to 15) Number of the slices used for the transitions
 

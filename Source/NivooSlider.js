@@ -38,6 +38,7 @@ var NivooSlider = new Class({
 	holder: null,
 	hover: false,
 	interval: null,
+	isActive: true,
 	orientation: '',
     paused: false,
     running: false,
@@ -57,6 +58,7 @@ var NivooSlider = new Class({
         effect: 'sliceDown', // TODO allow to pass an array with multiple effects
 		interval: 3000,
 		orientation: 'vertical',
+		pauseOnBlur: false,
 		pauseOnHover: true,
 		slices: 15,
 
@@ -82,6 +84,19 @@ var NivooSlider = new Class({
 
 		if (this.options.autoPlay) {
 			this.play();
+
+			if (this.options.pauseOnBlur) {
+				window.addEvents({
+					blur: function () {
+						this.isActive = false;
+						this.pause();
+					}.bind(this),
+					focus: function () {
+						this.isActive = true;
+						this.play();
+					}.bind(this)
+				});
+			}
 		}
     },
 
@@ -92,8 +107,7 @@ var NivooSlider = new Class({
 
         fx.start(fxStyles).chain(function () {
 			this.count += 1;
-			if (this.count === this.options.slices || isLast)
-			{
+			if (this.count === this.options.slices || isLast) {
 				this.running = false;
 
 				// fire onFinish function
@@ -254,8 +268,7 @@ var NivooSlider = new Class({
 			events: {
 				'click': function (e) {
 					e.stop();
-					if (this.options.autoPlay)
-					{
+					if (this.options.autoPlay) {
 						this.pause();
 						if (!this.options.pauseOnHover)
 						{
@@ -300,8 +313,7 @@ var NivooSlider = new Class({
 		};
 
 		// effects that need one slice only
-		if (['fade', 'wipeLeft', 'wipeRight'].contains(this.options.effect))
-		{
+		if (['fade', 'wipeLeft', 'wipeRight'].contains(this.options.effect)) {
 			this.options.slices = 1;
 		}
 
@@ -362,8 +374,7 @@ var NivooSlider = new Class({
 		this.showCaption();
 		
 		// attach pauseOnHover		
-		if (this.options.pauseOnHover && this.options.autoPlay)
-		{
+		if (this.options.pauseOnHover && this.options.autoPlay) {
 			this.holder.addEvents({
 				'mouseenter': function () {
 					this.pause();
@@ -399,8 +410,7 @@ var NivooSlider = new Class({
 	{
 		this.currentSlide += 1;
 
-		if (this.currentSlide === this.totalSlides)
-		{
+		if (this.currentSlide === this.totalSlides) {
 			this.currentSlide = 0;
 		}
 
@@ -410,28 +420,28 @@ var NivooSlider = new Class({
 	pause: function ()
 	{
 		window.clearInterval(this.interval);
+		this.interval = null;
 	},
 
 	play: function ()
 	{
-		this.interval = this.next.periodical(this.options.interval, this);
+		if (this.interval === null && this.isActive === true) {
+			this.interval = this.next.periodical(this.options.interval, this);
+		}
 	},
 	
 	previous: function ()
 	{
-		if (this.options.autoPlay)
-		{
+		if (this.options.autoPlay) {
 			this.pause();
-			if (!this.options.pauseOnHover)
-			{
+			if (!this.options.pauseOnHover) {
 				this.play();
 			}
 		}
 
 		this.currentSlide -= 1;
 
-        if (this.currentSlide < 0)
-		{
+        if (this.currentSlide < 0) {
 			this.currentSlide = (this.totalSlides - 1);
 		}
 
@@ -442,8 +452,7 @@ var NivooSlider = new Class({
     {
         var active = this.container.getElement('div.control-nav a.current');
 
-        if (active)
-        {
+        if (active) {
             active.removeClass('current');
         }
         
@@ -454,8 +463,7 @@ var NivooSlider = new Class({
 	{
 		var title = this.currentImage.get('title');
 
-		if (!title)
-		{
+		if (!title) {
 			this.hideCaption();
 			return;
 		}
@@ -743,15 +751,12 @@ var NivooSlider = new Class({
 		var clone,
             imageParent = this.currentImage.getParent();
 
-        if (imageParent.get('tag') === 'a')
-		{
+        if (imageParent.get('tag') === 'a') {
 			clone = imageParent.clone(false).cloneEvents(imageParent);
 			clone.replaces(this.linkHolder);
 			this.linkHolder = clone;
 			this.linkHolder.addClass('nivoo-link').setStyle('display', 'block');
-		}
-		else
-		{
+		} else {
 			this.linkHolder.setStyle('display', 'none');
 		}
 	},
