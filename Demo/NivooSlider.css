@@ -46,6 +46,20 @@
     right: 0;
 }
 
+.direction-nav-hide {
+	opacity: 0;
+	transition: opacity 1s ease;
+	-moz-transition: opacity 1s ease;
+	-ms-transition: opacity 1s ease;
+	-o-transition: opacity 1s ease;
+	-moz-transition: opacity 1s ease;
+	-webkit-transition: opacity 1s ease;
+	}
+	.nivoo-slider:hover .direction-nav-hide,
+	.direction-nav-hide:hover {
+		opacity: 1;
+	}
+
 /* directioNavPosition inside */
 .direction-nav-left,
 .direction-nav-right {
@@ -113,11 +127,11 @@ div.control-nav {
         padding: 2px;
         text-decoration: none;
         text-shadow: 0 0 2px #ddd;
+		transition: color 1s;
         -moz-transition: color 1s;
         -ms-transition: color 1s;
         -o-transition: color 1s;
         -webkit-transition: color 1s;
-        transition: color 1s;
         }
 		div.control-nav .disc {
 			font-size: 40px;

@@ -218,18 +218,16 @@ var NivooSlider = new Class({
 		var directionNavStyles,
             leftContainer,
             rightContainer,
-            target,
-            width;
+            target;
 
         target = this.options.directionNavPosition === 'inside' ? this.holder : this.container;
-		width = this.options.directionNavWidth;
 
 		directionNavStyles = {
 			height: this.containerSize.y
 		};
         
         if (this.options.directionNavPosition === 'inside' && this.options.directionNavWidth.toInt() !== 0) {
-            directionNavStyles.width = width;
+            directionNavStyles.width = this.options.directionNavWidth;
         }
 
 		// create container
@@ -242,7 +240,6 @@ var NivooSlider = new Class({
 		}).inject(target);
 		
 		// create controls
-
 		this.leftNav = new Element('a', {
 			events: {
 				'click': function (e) {
@@ -284,17 +281,8 @@ var NivooSlider = new Class({
 			}
 		}).inject(rightContainer);
 
-		if (this.options.directionNavHide && this.options.directionNav)
-		{
-			$$(this.leftNav, this.rightNav).setStyle('opacity', 0);
-			this.holder.addEvents({
-				'mouseout': function () {
-					$$(this.leftNav, this.rightNav).fade(0);
-				}.bind(this),
-				'mouseover': function () {
-					$$(this.leftNav, this.rightNav).fade(1);	
-				}.bind(this)
-			});
+		if (this.options.directionNavHide && this.options.directionNav) {
+			$$(this.leftNav, this.rightNav).addClass('direction-nav-hide');
 		}
 	},
     
@@ -348,6 +336,7 @@ var NivooSlider = new Class({
         if (this.options.directionNavPosition === 'outside') {
             this.container.addClass('direction-nav-outside');
         }
+
 		// wrap child elements
 		this.holder = new Element('div.nivoo-slider-holder').adopt(this.container.getChildren()).inject(this.container);
 
